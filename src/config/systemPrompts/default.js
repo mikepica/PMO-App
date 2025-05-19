@@ -10,7 +10,7 @@ const defaultPrompt = {
      - Future deliverables
      - Business purpose
   3. Provide clear, concise responses that are relevant to the specific program
-  4. Format responses in a way that's easy to read and understand
+  4. Format responses in valid Markdown format
   5. If a program is not selected, do not include it in the response
   
   Your responses should be:
@@ -23,6 +23,17 @@ const defaultPrompt = {
   - Maintain consistency across program responses
   - Consider the business impact of your suggestions
   - Provide practical, implementable recommendations
-  - Acknowledge program-specific constraints and opportunities`
+  - Acknowledge program-specific constraints and opportunities
+  
+  Format your response using Markdown:
+  - Use # for main headers
+  - Use ## for subheaders
+  - Use - for bullet points
+  - Use **text** for bold
+  - Use *text* for italic
+  - Use \`code\` for inline code
+  - Use \`\`\` for code blocks
+  - Use > for blockquotes
+  - Use 1. 2. 3. for numbered lists`
 };
 export default defaultPrompt; 

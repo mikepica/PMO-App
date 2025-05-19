@@ -385,7 +385,9 @@ function App() {
                 </div>
               ) : portfolioResponse ? (
                 <div className="mt-2 p-2 bg-gray-50 rounded">
-                  <ReactMarkdown>{portfolioResponse}</ReactMarkdown>
+                  <div className="markdown-content">
+                    <ReactMarkdown>{portfolioResponse}</ReactMarkdown>
+                  </div>
                 </div>
               ) : null}
             </div>
@@ -425,7 +427,9 @@ function App() {
                     </div>
                   ) : response ? (
                     <div className="mt-2 p-2 bg-gray-50 rounded">
-                      <ReactMarkdown>{truncated}</ReactMarkdown>
+                      <div className="markdown-content">
+                        <ReactMarkdown>{truncated}</ReactMarkdown>
+                      </div>
                       {isTruncated && (
                         <button
                           className="mt-2 text-blue-600 underline text-sm"
@@ -499,7 +503,9 @@ function App() {
         showCopy={true}
         copyContent={modalContent}
       >
-        <ReactMarkdown>{modalContent}</ReactMarkdown>
+        <div className="markdown-content">
+          <ReactMarkdown>{modalContent}</ReactMarkdown>
+        </div>
       </Modal>
     </div>
   );
