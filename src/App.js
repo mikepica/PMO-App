@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { programs } from './data/programs';
 import { defaultPortfolioPrompt } from './config/systemPrompts';
 import defaultProgramPrompt from './config/systemPrompts/program/defaultProgram';
@@ -82,6 +82,18 @@ function App() {
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || (selectedPrograms.length === 0 && !showPortfolio)) return;
+
+    // Add user message to chat thread
+    setMessages(prev => [
+      ...prev,
+      {
+        id: Date.now(),
+        text: inputMessage,
+        sender: 'user'
+      }
+    ]);
+
+    setInputMessage('');
 
     setIsLoading(true);
     const newResponses = {};
@@ -269,6 +281,24 @@ function App() {
     project.purpose.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // --- Begin overflow logic ---
+  const [isOverflowing, setIsOverflowing] = useState({});
+  const contentRefs = useRef({});
+
+  useEffect(() => {
+    filteredProjects.forEach((proj) => {
+      if (contentRefs.current[proj.projectId]) {
+        const el = contentRefs.current[proj.projectId];
+        setIsOverflowing(prev => ({
+          ...prev,
+          [proj.projectId]: el.scrollHeight > el.clientHeight
+        }));
+      }
+    });
+    // eslint-disable-next-line
+  }, [responses, filteredProjects]);
+  // --- End overflow logic ---
+
   return (
     <div className="flex flex-col h-screen bg-gray-100">
       {/* Header */}
@@ -406,8 +436,6 @@ function App() {
           <div className="grid grid-cols-2 gap-4">
             {filteredProjects.map(project => {
               const response = responses[project.projectId];
-              const truncated = response && response.length > 200 ? response.slice(0, 200) + '...' : response;
-              const isTruncated = response && response.length > 200;
               return (
                 <div
                   key={project.projectId}
@@ -437,10 +465,14 @@ function App() {
                     </div>
                   ) : response ? (
                     <div className="mt-2 p-2 bg-gray-50 rounded">
-                      <div className="markdown-content">
-                        <ReactMarkdown>{truncated}</ReactMarkdown>
+                      <div
+                        className="markdown-content max-h-40 overflow-hidden"
+                        ref={el => (contentRefs.current[project.projectId] = el)}
+                        style={{ position: 'relative' }}
+                      >
+                        <ReactMarkdown>{response}</ReactMarkdown>
                       </div>
-                      {isTruncated && (
+                      {isOverflowing[project.projectId] && (
                         <button
                           className="mt-2 text-blue-600 underline text-sm"
                           onClick={() => {

@@ -59,6 +59,10 @@ function SystemPromptSelector({ onPromptSubmit }) {
 
   return (
     <div className="flex flex-wrap gap-2 mb-4 relative">
+      {/* Instructional text above pre-made prompts */}
+      <div className="w-full mb-2 italic text-gray-600 text-xs">
+        The below pre-made workflows will popuout a modal for program selection. General chat messages will use the Program Selector in the top banner
+      </div>
       {PROMPT_MAP.map((promptObj, idx) => {
         const isPortfolioOnly = !promptObj.program;
         return (
@@ -78,71 +82,83 @@ function SystemPromptSelector({ onPromptSubmit }) {
             <div className="mb-4 text-lg font-semibold">
               {PROMPT_MAP[activePromptIdx].portfolio.name}
             </div>
+            {/* Preview text, updates live based on contextType */}
+            <div className="mb-2 italic text-gray-600">
+              {(() => {
+                const promptObj = PROMPT_MAP[activePromptIdx];
+                if (!promptObj.program) {
+                  return promptObj.portfolio.preview;
+                }
+                return contextType === 'portfolio'
+                  ? promptObj.portfolio.preview
+                  : promptObj.program.preview;
+              })()}
+            </div>
             {/* Context selection */}
-            {PROMPT_MAP[activePromptIdx].program ? (
+            <div className="mb-2">
+              <label className="font-medium mr-4">
+                <input
+                  type="radio"
+                  name="contextType"
+                  value="portfolio"
+                  checked={contextType === 'portfolio'}
+                  onChange={() => setContextType('portfolio')}
+                />{' '}
+                Portfolio
+              </label>
+              <label className="font-medium">
+                <input
+                  type="radio"
+                  name="contextType"
+                  value="program"
+                  checked={contextType === 'program'}
+                  onChange={() => setContextType('program')}
+                  disabled={!PROMPT_MAP[activePromptIdx].program}
+                />{' '}
+                Program(s)
+              </label>
+            </div>
+            {/* Show program selection only if program is available and selected */}
+            {PROMPT_MAP[activePromptIdx].program && contextType === 'program' && (
               <>
-                <div className="mb-2">
-                  <label className="font-medium mr-4">
-                    <input
-                      type="radio"
-                      name="contextType"
-                      value="portfolio"
-                      checked={contextType === 'portfolio'}
-                      onChange={() => setContextType('portfolio')}
-                    />{' '}
-                    Portfolio
-                  </label>
-                  <label className="font-medium">
-                    <input
-                      type="radio"
-                      name="contextType"
-                      value="program"
-                      checked={contextType === 'program'}
-                      onChange={() => setContextType('program')}
-                    />{' '}
-                    Program(s)
-                  </label>
+                <div className="flex gap-2 mb-2">
+                  <button
+                    className="px-2 py-1 rounded bg-blue-500 text-white text-xs hover:bg-blue-600"
+                    onClick={() => setSelectedPrograms(programs.projects.map(p => p.projectId))}
+                    type="button"
+                  >
+                    Select All
+                  </button>
+                  <button
+                    className="px-2 py-1 rounded bg-gray-400 text-white text-xs hover:bg-gray-500"
+                    onClick={() => setSelectedPrograms([])}
+                    type="button"
+                  >
+                    Deselect All
+                  </button>
                 </div>
-                {contextType === 'program' && (
-                  <>
-                    <div className="flex gap-2 mb-2">
-                      <button
-                        className="px-2 py-1 rounded bg-blue-500 text-white text-xs hover:bg-blue-600"
-                        onClick={() => setSelectedPrograms(programs.projects.map(p => p.projectId))}
-                        type="button"
-                      >
-                        Select All
-                      </button>
-                      <button
-                        className="px-2 py-1 rounded bg-gray-400 text-white text-xs hover:bg-gray-500"
-                        onClick={() => setSelectedPrograms([])}
-                        type="button"
-                      >
-                        Deselect All
-                      </button>
-                    </div>
-                    <div className="mb-4 max-h-40 overflow-y-auto border rounded p-2">
-                      {programs.projects.map(project => (
-                        <label key={project.projectId} className="block mb-1">
-                          <input
-                            type="checkbox"
-                            checked={selectedPrograms.includes(project.projectId)}
-                            onChange={e => {
-                              if (e.target.checked) {
-                                setSelectedPrograms(prev => [...prev, project.projectId]);
-                              } else {
-                                setSelectedPrograms(prev => prev.filter(id => id !== project.projectId));
-                              }
-                            }}
-                          />{' '}
-                          {project.name} <span className="text-xs text-gray-400">({project.projectId})</span>
-                        </label>
-                      ))}
-                    </div>
-                  </>
-                )}
+                <div className="mb-4 max-h-40 overflow-y-auto border rounded p-2">
+                  {programs.projects.map(project => (
+                    <label key={project.projectId} className="block mb-1">
+                      <input
+                        type="checkbox"
+                        checked={selectedPrograms.includes(project.projectId)}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            setSelectedPrograms(prev => [...prev, project.projectId]);
+                          } else {
+                            setSelectedPrograms(prev => prev.filter(id => id !== project.projectId));
+                          }
+                        }}
+                      />{' '}
+                      {project.name} <span className="text-xs text-gray-400">({project.projectId})</span>
+                    </label>
+                  ))}
+                </div>
               </>
-            ) : (
+            )}
+            {/* If portfolio-only, show info message */}
+            {!PROMPT_MAP[activePromptIdx].program && (
               <div className="mb-4 font-medium text-blue-700">This prompt is only available at the portfolio level.</div>
             )}
             <div className="flex justify-end gap-2">
