@@ -2,6 +2,8 @@ const programUpdatesPrompt = {
   id: 'program-updates',
   name: 'Program Updates',
   type: 'program',
+  model: '4.1-nano',
+  temperature: 0.2,
   preview: 'Analyze recent achievements and upcoming deliverables for the selected program',
   content: `You are an expert Project and Portfolio Manager with a strong focus on portfolio management for R&D projects at a large pharmaceutical company.
 

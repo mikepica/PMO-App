@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { programs } from './data/programs';
 import { defaultPortfolioPrompt } from './config/systemPrompts';
 import defaultProgramPrompt from './config/systemPrompts/program/defaultProgram';
-import { API_CONFIG } from './config/api';
+import { API_CONFIG, getModelConfig } from './config/api';
 import ReactMarkdown from 'react-markdown';
 import SystemPromptSelector from './components/SystemPromptSelector';
 import Modal from './components/Modal';
@@ -84,16 +84,6 @@ function App() {
     if (!inputMessage.trim() || (selectedPrograms.length === 0 && !showPortfolio)) return;
 
     setIsLoading(true);
-    const newMessage = {
-      id: Date.now(),
-      text: inputMessage,
-      sender: 'user'
-    };
-
-    setMessages(prev => [...prev, newMessage]);
-    setInputMessage('');
-
-    // Process each selected program
     const newResponses = {};
 
     try {
@@ -111,15 +101,15 @@ function App() {
               'X-Title': 'Program Management Assistant'
             },
             body: JSON.stringify({
-              model: API_CONFIG.model,
+              model: getModelConfig(defaultPortfolioPrompt.model, defaultPortfolioPrompt.temperature).model,
+              temperature: getModelConfig(defaultPortfolioPrompt.model, defaultPortfolioPrompt.temperature).temperature,
               messages: [
                 { role: 'system', content: defaultPortfolioPrompt.content },
                 {
                   role: 'user',
-                  content: `Portfolio Context: ${JSON.stringify(programs.projects.filter(p => selectedPrograms.includes(p.projectId)))}\n\nUser Query: ${inputMessage}`
+                  content: `Portfolio Context: ${JSON.stringify(programs)}\n\nUser Query: ${inputMessage}`
                 }
               ],
-              temperature: 0.7,
               max_tokens: 1000
             })
           }).then(response => response.json())
@@ -140,7 +130,8 @@ function App() {
               'X-Title': 'Program Management Assistant'
             },
             body: JSON.stringify({
-              model: API_CONFIG.model,
+              model: getModelConfig(defaultProgramPrompt.model, defaultProgramPrompt.temperature).model,
+              temperature: getModelConfig(defaultProgramPrompt.model, defaultProgramPrompt.temperature).temperature,
               messages: [
                 { role: 'system', content: defaultProgramPrompt.content },
                 {
@@ -148,7 +139,6 @@ function App() {
                   content: `Program Context: ${JSON.stringify(program)}\n\nUser Query: ${inputMessage}`
                 }
               ],
-              temperature: 0.7,
               max_tokens: 1000
             })
           }).then(response => response.json())
@@ -208,7 +198,8 @@ function App() {
               'X-Title': 'Program Management Assistant'
             },
             body: JSON.stringify({
-              model: API_CONFIG.model,
+              model: getModelConfig(data.prompt.model, data.prompt.temperature).model,
+              temperature: getModelConfig(data.prompt.model, data.prompt.temperature).temperature,
               messages: [
                 { role: 'system', content: data.prompt.content },
                 {
@@ -216,7 +207,6 @@ function App() {
                   content: `Portfolio Context: ${JSON.stringify(programs.projects)}\n\nUser Query: `
                 }
               ],
-              temperature: 0.7,
               max_tokens: 1000
             })
           }).then(response => response.json())
@@ -234,7 +224,8 @@ function App() {
               'X-Title': 'Program Management Assistant'
             },
             body: JSON.stringify({
-              model: API_CONFIG.model,
+              model: getModelConfig(data.prompt.model, data.prompt.temperature).model,
+              temperature: getModelConfig(data.prompt.model, data.prompt.temperature).temperature,
               messages: [
                 { role: 'system', content: data.prompt.content },
                 {
@@ -242,7 +233,6 @@ function App() {
                   content: `Program Context: ${JSON.stringify(program)}\n\nUser Query: `
                 }
               ],
-              temperature: 0.7,
               max_tokens: 1000
             })
           }).then(response => response.json())

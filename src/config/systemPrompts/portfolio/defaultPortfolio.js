@@ -2,6 +2,8 @@ const defaultPortfolioPrompt = {
   id: 'default-portfolio',
   name: 'Default Portfolio',
   type: 'portfolio',
+  model: '4.1-nano',
+  temperature: 0.4,
   preview: 'Analyze portfolio-level insights and cross-program dependencies',
   content: `You are an expert Portfolio Manager specializing in R&D project portfolio management at a large pharmaceutical company.
 

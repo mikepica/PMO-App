@@ -2,6 +2,8 @@ const defaultProgramPrompt = {
   id: 'default-program',
   name: 'Default Program',
   type: 'program',
+  model: '4.1-nano',
+  temperature: 0.4,
   preview: 'Analyze individual program performance and metrics',
   content: `You are an expert Program Manager specializing in R&D project management at a large pharmaceutical company.
 

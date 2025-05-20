@@ -2,6 +2,8 @@ const tradeOffsPrompt = {
   id: 'trade-offs',
   name: 'Trade-offs',
   type: 'portfolio',
+  model: '4.1-nano',
+  temperature: 0.7,
   preview: 'Identify interdependencies and analyze trade-offs to optimize portfolio value',
   content: `You are an expert Portfolio Manager specializing in R&D project portfolio management at a large pharmaceutical company.
 

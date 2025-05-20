@@ -2,6 +2,8 @@ const trendsAndSurprisesPrompt = {
   id: 'trends-surprises',
   name: 'Trends and Surprises',
   type: 'portfolio',
+  model: '4.1-nano',
+  temperature: 0.7,
   preview: 'Spot emerging trends and unexpected developments across the portfolio',
   content: `You are an expert Portfolio Manager specializing in R&D project portfolio management at a large pharmaceutical company.
 
