@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { programs } from './data/programs';
-import { defaultPrompt } from './config/systemPrompts';
+import { defaultPortfolioPrompt } from './config/systemPrompts';
+import defaultProgramPrompt from './config/systemPrompts/program/defaultProgram';
 import { API_CONFIG } from './config/api';
 import ReactMarkdown from 'react-markdown';
 import SystemPromptSelector from './components/SystemPromptSelector';
@@ -20,7 +21,7 @@ const icons = {
 };
 
 function App() {
-  const [selectedPrograms, setSelectedPrograms] = useState(programs.projects.map(p => p.projectId));
+  const [selectedPrograms, setSelectedPrograms] = useState([]);
   const [messages, setMessages] = useState([]);
   const [responses, setResponses] = useState({});
   const [portfolioResponse, setPortfolioResponse] = useState('');
@@ -30,11 +31,11 @@ function App() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showChat, setShowChat] = useState(true);
   const [showPortfolio, setShowPortfolio] = useState(true);
-  const [selectedPrompt, setSelectedPrompt] = useState(defaultPrompt);
   const dropdownRef = useRef(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState('');
   const [modalTitle, setModalTitle] = useState('');
+  const [portfolioExpanded, setPortfolioExpanded] = useState(false);
 
   // Close dropdown on outside click
   React.useEffect(() => {
@@ -55,24 +56,28 @@ function App() {
 
   const handleProgramToggle = (programId) => {
     if (programId === 'PORTFOLIO') {
-      setShowPortfolio(prev => !prev);
+      setShowPortfolio(prev => {
+        if (!prev) setSelectedPrograms([]);
+        return !prev;
+      });
       return;
     }
-    setSelectedPrograms(prev => 
-      prev.includes(programId)
+    setSelectedPrograms(prev => {
+      const newSelected = prev.includes(programId)
         ? prev.filter(id => id !== programId)
-        : [...prev, programId]
-    );
+        : [...prev, programId];
+      if (newSelected.length > 0) setShowPortfolio(false);
+      return newSelected;
+    });
   };
 
   const handleSelectAll = () => {
     setSelectedPrograms(programs.projects.map(p => p.projectId));
-    setShowPortfolio(true);
+    setShowPortfolio(false);
   };
 
   const handleDeselectAll = () => {
     setSelectedPrograms([]);
-    setShowPortfolio(false);
   };
 
   const handleSendMessage = async () => {
@@ -108,7 +113,7 @@ function App() {
             body: JSON.stringify({
               model: API_CONFIG.model,
               messages: [
-                { role: 'system', content: selectedPrompt.content },
+                { role: 'system', content: defaultPortfolioPrompt.content },
                 {
                   role: 'user',
                   content: `Portfolio Context: ${JSON.stringify(programs.projects.filter(p => selectedPrograms.includes(p.projectId)))}\n\nUser Query: ${inputMessage}`
@@ -137,7 +142,7 @@ function App() {
             body: JSON.stringify({
               model: API_CONFIG.model,
               messages: [
-                { role: 'system', content: selectedPrompt.content },
+                { role: 'system', content: defaultProgramPrompt.content },
                 {
                   role: 'user',
                   content: `Program Context: ${JSON.stringify(program)}\n\nUser Query: ${inputMessage}`
@@ -178,15 +183,13 @@ function App() {
   };
 
   // Handler for predefined prompt submissions
-  const handlePredefinedPromptSubmit = async ({ prompt, selectedPrograms, showPortfolio }) => {
-    if ((selectedPrograms.length === 0 && !showPortfolio)) return;
+  const handlePredefinedPromptSubmit = async (data) => {
     setIsLoading(true);
-    // Add a chat message for the predefined prompt
     setMessages(prev => [
       ...prev,
       {
         id: Date.now(),
-        text: `Predefined Prompt: ${prompt.name}`,
+        text: `Predefined Prompt: ${data.prompt.name}`,
         sender: 'user'
       }
     ]);
@@ -194,7 +197,7 @@ function App() {
     const newResponses = {};
     try {
       const promises = [];
-      if (showPortfolio) {
+      if (data.context === 'portfolio') {
         promises.push(
           fetch(API_CONFIG.apiUrl, {
             method: 'POST',
@@ -207,21 +210,20 @@ function App() {
             body: JSON.stringify({
               model: API_CONFIG.model,
               messages: [
-                { role: 'system', content: prompt.content },
+                { role: 'system', content: data.prompt.content },
                 {
                   role: 'user',
-                  content: `Portfolio Context: ${JSON.stringify(programs.projects.filter(p => selectedPrograms.includes(p.projectId)))}\n\nUser Query: `
+                  content: `Portfolio Context: ${JSON.stringify(programs.projects)}\n\nUser Query: `
                 }
               ],
               temperature: 0.7,
               max_tokens: 1000
             })
           }).then(response => response.json())
-            .then(data => ({ type: 'portfolio', content: data.choices[0].message.content }))
+            .then(result => ({ type: 'portfolio', content: result.choices[0].message.content }))
         );
-      }
-      selectedPrograms.forEach(programId => {
-        const program = programs.projects.find(p => p.projectId === programId);
+      } else if (data.context === 'program' && data.programId) {
+        const program = programs.projects.find(p => p.projectId === data.programId);
         promises.push(
           fetch(API_CONFIG.apiUrl, {
             method: 'POST',
@@ -234,7 +236,7 @@ function App() {
             body: JSON.stringify({
               model: API_CONFIG.model,
               messages: [
-                { role: 'system', content: prompt.content },
+                { role: 'system', content: data.prompt.content },
                 {
                   role: 'user',
                   content: `Program Context: ${JSON.stringify(program)}\n\nUser Query: `
@@ -244,9 +246,9 @@ function App() {
               max_tokens: 1000
             })
           }).then(response => response.json())
-            .then(data => ({ type: 'program', programId, content: data.choices[0].message.content }))
+            .then(result => ({ type: 'program', programId: data.programId, content: result.choices[0].message.content }))
         );
-      });
+      }
       const results = await Promise.all(promises);
       results.forEach(result => {
         if (result.type === 'portfolio') {
@@ -257,10 +259,10 @@ function App() {
       });
     } catch (error) {
       console.error('Error fetching responses:', error);
-      selectedPrograms.forEach(programId => {
-        newResponses[programId] = 'Error processing request. Please try again.';
-      });
-      if (showPortfolio) {
+      if (data.context === 'program' && data.programId) {
+        newResponses[data.programId] = 'Error processing request. Please try again.';
+      }
+      if (data.context === 'portfolio') {
         setPortfolioResponse('Error processing portfolio request. Please try again.');
       }
     } finally {
@@ -269,7 +271,6 @@ function App() {
         ...prev,
         ...newResponses
       }));
-      setSelectedPrompt(defaultPrompt); // Reset to default prompt
     }
   };
 
@@ -330,6 +331,7 @@ function App() {
                       checked={showPortfolio}
                       onChange={() => handleProgramToggle('PORTFOLIO')}
                       className="form-checkbox h-4 w-4 text-blue-500"
+                      disabled={selectedPrograms.length > 0}
                     />
                     <span className="flex-1 text-sm font-semibold">Portfolio Overview</span>
                   </label>
@@ -340,6 +342,7 @@ function App() {
                         checked={selectedPrograms.includes(project.projectId)}
                         onChange={() => handleProgramToggle(project.projectId)}
                         className="form-checkbox h-4 w-4 text-blue-500"
+                        disabled={showPortfolio}
                       />
                       <span className="flex-1 text-sm">{project.name}</span>
                       <span className="text-xs text-gray-400">{project.projectId}</span>
@@ -370,28 +373,45 @@ function App() {
       <div className="flex flex-1 min-h-0">
         {/* Left side - Program boxes */}
         <div className={`transition-all duration-300 ${showChat ? 'w-2/3' : 'w-full'} p-4 space-y-4 overflow-y-auto`}>
-          {/* Portfolio Response Box */}
-          {showPortfolio && (
-            <div className="bg-white p-4 rounded-lg shadow mb-4">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h3 className="text-lg font-semibold">Portfolio Overview</h3>
-                  <div className="text-sm text-gray-500">Combined Analysis</div>
-                </div>
+          <div className="bg-white p-4 rounded-lg shadow mb-4">
+            <div className="flex justify-between items-start mb-2">
+              <div>
+                <h3 className="text-lg font-semibold">Portfolio Overview</h3>
+                <div className="text-sm text-gray-500">Combined Analysis</div>
               </div>
-              {isLoading ? (
-                <div className="mt-2 p-2 bg-gray-50 rounded animate-pulse">
-                  Processing...
-                </div>
-              ) : portfolioResponse ? (
-                <div className="mt-2 p-2 bg-gray-50 rounded">
-                  <div className="markdown-content">
-                    <ReactMarkdown>{portfolioResponse}</ReactMarkdown>
-                  </div>
-                </div>
-              ) : null}
+              {portfolioResponse && (
+                <button
+                  className="ml-2 px-2 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600"
+                  onClick={() => navigator.clipboard.writeText(portfolioResponse)}
+                >
+                  Copy
+                </button>
+              )}
             </div>
-          )}
+            {isLoading ? (
+              <div className="mt-2 p-2 bg-gray-50 rounded animate-pulse">
+                Processing...
+              </div>
+            ) : portfolioResponse ? (
+              <div className="mt-2 p-2 bg-gray-50 rounded">
+                <div className="markdown-content">
+                  <ReactMarkdown>
+                    {portfolioExpanded || portfolioResponse.length < 600
+                      ? portfolioResponse
+                      : portfolioResponse.slice(0, 600) + '...'}
+                  </ReactMarkdown>
+                </div>
+                {portfolioResponse.length >= 600 && (
+                  <button
+                    className="mt-2 text-blue-600 underline text-sm"
+                    onClick={() => setPortfolioExpanded(v => !v)}
+                  >
+                    {portfolioExpanded ? 'Show Less' : 'Show More'}
+                  </button>
+                )}
+              </div>
+            ) : null}
+          </div>
 
           <div className="grid grid-cols-2 gap-4">
             {filteredProjects.map(project => {
