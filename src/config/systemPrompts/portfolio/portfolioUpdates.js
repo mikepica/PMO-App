@@ -2,7 +2,7 @@ const portfolioUpdatesPrompt = {
   id: 'portfolio-updates',
   name: 'Portfolio Updates',
   type: 'portfolio',
-  model: '4.1-nano',
+  model: 'openai/gpt-4.1-mini',
   temperature: 0.2,
   preview: 'Analyze recent achievements and upcoming deliverables across the portfolio',
   content: `You are an expert Project and Portfolio Manager with a strong focus on portfolio management for R&D projects at a large pharmaceutical company.
