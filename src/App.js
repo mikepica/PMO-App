@@ -24,6 +24,7 @@ function App() {
   const [selectedPrograms, setSelectedPrograms] = useState([]);
   const [messages, setMessages] = useState([]);
   const [responses, setResponses] = useState({});
+  const [latestQueryResponses, setLatestQueryResponses] = useState({});
   const [portfolioResponse, setPortfolioResponse] = useState('');
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -87,6 +88,9 @@ function App() {
 
     // Set hasUserSubmitted to true on first submission
     setHasUserSubmitted(true);
+
+    // Clear previous latest query responses
+    setLatestQueryResponses({});
 
     // Add user message to chat thread
     setMessages(prev => [
@@ -170,6 +174,11 @@ function App() {
           setPortfolioResponse(result.content);
         } else {
           newResponses[result.programId] = result.content;
+          // Add to latest query responses
+          setLatestQueryResponses(prev => ({
+            ...prev,
+            [result.programId]: result.content
+          }));
         }
       });
     } catch (error) {
@@ -201,7 +210,11 @@ function App() {
       }
     ]);
 
+    // Clear previous latest query responses
+    setLatestQueryResponses({});
+
     const newResponses = {};
+    const newLatestQueryResponses = {};
     try {
       const promises = [];
       if (data.context === 'portfolio') {
@@ -255,15 +268,53 @@ function App() {
           }).then(response => response.json())
             .then(result => ({ type: 'program', programId: data.programId, content: result.choices[0].message.content }))
         );
+      } else if (data.context === 'program' && data.selectedPrograms) {
+        // Multi-program support
+        data.selectedPrograms.forEach(programId => {
+          const program = programs.projects.find(p => p.projectId === programId);
+          promises.push(
+            fetch(API_CONFIG.apiUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${API_CONFIG.apiKey}`,
+                'HTTP-Referer': window.location.origin,
+                'X-Title': 'Program Management Assistant'
+              },
+              body: JSON.stringify({
+                model: getModelConfig(data.prompt.model, data.prompt.temperature).model,
+                temperature: getModelConfig(data.prompt.model, data.prompt.temperature).temperature,
+                messages: [
+                  { role: 'system', content: data.prompt.content },
+                  {
+                    role: 'user',
+                    content: `Program Context: ${JSON.stringify(program)}\n\nUser Query: `
+                  }
+                ],
+                max_tokens: 1000
+              })
+            }).then(response => response.json())
+              .then(result => ({ type: 'program', programId, content: result.choices[0].message.content }))
+          );
+        });
       }
       const results = await Promise.all(promises);
       results.forEach(result => {
         if (result.type === 'portfolio') {
           setPortfolioResponse(result.content);
+          // Portfolio is the only top section if present
+          setLatestQueryResponses({});
         } else {
           newResponses[result.programId] = result.content;
+          newLatestQueryResponses[result.programId] = result.content;
         }
       });
+      // If portfolio, only show portfolio at top
+      if (results.some(r => r.type === 'portfolio')) {
+        setLatestQueryResponses({});
+      } else {
+        setLatestQueryResponses(newLatestQueryResponses);
+      }
     } catch (error) {
       console.error('Error fetching responses:', error);
       if (data.context === 'program' && data.programId) {
@@ -278,6 +329,7 @@ function App() {
         ...prev,
         ...newResponses
       }));
+      setHasUserSubmitted(true);
     }
   };
 
@@ -327,6 +379,7 @@ function App() {
       <div className="flex flex-1 min-h-0">
         {/* Left side - Program boxes */}
         <div className={`transition-all duration-300 ${showChat ? 'w-2/3' : 'w-full'} p-4 space-y-4 overflow-y-auto`}>
+          {/* Portfolio Overview always at the top */}
           <div className="bg-white p-4 rounded-lg shadow mb-4 portfolio-overview">
             <div className="flex justify-between items-start mb-2">
               <div>
@@ -342,7 +395,7 @@ function App() {
                 </button>
               )}
             </div>
-            {isLoading ? (
+            {isLoading && showPortfolio ? (
               <div className="mt-2 p-2 bg-gray-50 rounded animate-pulse">
                 Processing...
               </div>
@@ -366,7 +419,9 @@ function App() {
               </div>
             ) : null}
           </div>
+          {/* End Portfolio Overview always at the top */}
 
+          {/* Program boxes grid, including expand/collapse logic */}
           <div className="grid grid-cols-2 gap-4">
             {/* If user hasn't submitted yet, show all boxes */}
             {!hasUserSubmitted ? (
@@ -424,11 +479,11 @@ function App() {
               ))
             ) : (
               <>
-                {/* Boxes with responses */}
+                {/* Top section: boxes with responses from latest query */}
                 {filteredProjects
-                  .filter(project => responses[project.projectId])
+                  .filter(project => latestQueryResponses[project.projectId])
                   .map(project => {
-                    const response = responses[project.projectId];
+                    const response = latestQueryResponses[project.projectId];
                     return (
                       <div
                         key={project.projectId}
@@ -482,36 +537,28 @@ function App() {
                       </div>
                     );
                   })}
-
                 {/* Dividing line */}
-                {filteredProjects.some(project => responses[project.projectId]) && 
-                 filteredProjects.some(project => !responses[project.projectId]) && (
-                  <div className="col-span-2 border-t border-gray-200 my-4"></div>
-                )}
-
+                <div className="col-span-2 border-t border-gray-200 my-4"></div>
                 {/* Show More button */}
-                {filteredProjects.some(project => !responses[project.projectId]) && (
-                  <div className="col-span-2 flex justify-center mb-4">
-                    <button
-                      onClick={() => setShowMoreExpanded(!showMoreExpanded)}
-                      className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors"
+                <div className="col-span-2 flex justify-center mb-4">
+                  <button
+                    onClick={() => setShowMoreExpanded(!showMoreExpanded)}
+                    className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors"
+                  >
+                    <span>{showMoreExpanded ? 'Show Less' : 'Show More'}</span>
+                    <svg
+                      className={`w-4 h-4 transform transition-transform ${showMoreExpanded ? 'rotate-180' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
                     >
-                      <span>{showMoreExpanded ? 'Show Less' : 'Show More'}</span>
-                      <svg
-                        className={`w-4 h-4 transform transition-transform ${showMoreExpanded ? 'rotate-180' : ''}`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-                  </div>
-                )}
-
-                {/* Boxes without responses */}
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                </div>
+                {/* Expand/collapse section: all other boxes */}
                 {showMoreExpanded && filteredProjects
-                  .filter(project => !responses[project.projectId])
+                  .filter(project => !latestQueryResponses[project.projectId])
                   .map(project => (
                     <div
                       key={project.projectId}
@@ -535,6 +582,29 @@ function App() {
                         <span>Progress: {project.status.percentComplete}%</span>
                         <span>Phase: {project.status.phase}</span>
                       </div>
+                      {responses[project.projectId] && (
+                        <div className="mt-2 p-2 bg-gray-50 rounded">
+                          <div
+                            className="markdown-content max-h-40 overflow-hidden"
+                            ref={el => (contentRefs.current[project.projectId] = el)}
+                            style={{ position: 'relative' }}
+                          >
+                            <ReactMarkdown>{responses[project.projectId]}</ReactMarkdown>
+                          </div>
+                          {isOverflowing[project.projectId] && (
+                            <button
+                              className="mt-2 text-blue-600 underline text-sm"
+                              onClick={() => {
+                                setModalTitle(project.name);
+                                setModalContent(responses[project.projectId]);
+                                setModalOpen(true);
+                              }}
+                            >
+                              Read More
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </div>
                   ))}
               </>
