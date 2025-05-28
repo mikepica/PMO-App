@@ -84,7 +84,7 @@ function App() {
   };
 
   const handleSendMessage = async () => {
-    if (!inputMessage.trim() || (selectedPrograms.length === 0 && !showPortfolio)) return;
+    if (!inputMessage.trim() || (!showPortfolio && selectedPrograms.length === 0)) return;
 
     // Set hasUserSubmitted to true on first submission
     setHasUserSubmitted(true);
