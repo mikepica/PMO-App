@@ -1,6 +1,6 @@
 const portfolioRisksAndMitigationsPrompt = {
   id: 'portfolio-risks-mitigations',
-  name: 'Portfolio Risks and Mitigations',
+  name: 'Program Risks and Mitigations',
   type: 'portfolio',
   model: 'openai/gpt-4.1-mini',
   temperature: 0.2,

@@ -304,81 +304,10 @@ function App() {
       {/* Header */}
       <header className="flex items-center justify-between px-8 py-4 bg-white shadow-sm border-b">
         <div className="flex items-center space-x-4">
-          <h1 className="text-2xl font-bold text-gray-800">Non-Drug Portfolio Program Dashboard</h1>
-          <span title="Program Selection" className="ml-2 text-blue-600">{icons.program}</span>
+          <img src="/ndp-logo.png" alt="NDP Logo" className="h-14 w-auto mr-3" />
+          <h1 className="text-2xl font-bold text-gray-800">Non-Drug Portfolio Dashboard</h1>
         </div>
         <div className="flex space-x-6">
-          <div className="relative" ref={dropdownRef}>
-            <button
-              className="flex flex-col items-center text-gray-700 hover:text-blue-600 focus:outline-none"
-              onClick={() => setDropdownOpen((open) => !open)}
-            >
-              {icons.program}
-              <span className="text-xs mt-1">Program Selection</span>
-            </button>
-            {dropdownOpen && (
-              <div className="absolute right-0 mt-2 w-80 bg-white border rounded shadow-lg z-50 p-4">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="font-semibold text-gray-700">Select Programs</span>
-                  <button onClick={() => setDropdownOpen(false)} className="text-gray-400 hover:text-gray-700 text-lg">×</button>
-                </div>
-                <div className="flex space-x-2 mb-2">
-                  <button
-                    onClick={handleSelectAll}
-                    className="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600"
-                  >
-                    Select All
-                  </button>
-                  <button
-                    onClick={handleDeselectAll}
-                    className="bg-gray-500 text-white px-2 py-1 rounded text-xs hover:bg-gray-600"
-                  >
-                    Deselect All
-                  </button>
-                  <input
-                    type="text"
-                    placeholder="Search..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="flex-1 p-1 border rounded text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div className="max-h-60 overflow-y-auto space-y-1">
-                  {/* Portfolio Option */}
-                  <label className="flex items-center space-x-2 p-1 rounded hover:bg-gray-50 cursor-pointer border-b pb-2 mb-2">
-                    <input
-                      type="checkbox"
-                      checked={showPortfolio}
-                      onChange={() => handleProgramToggle('PORTFOLIO')}
-                      className="form-checkbox h-4 w-4 text-blue-500"
-                      disabled={selectedPrograms.length > 0}
-                    />
-                    <span className="flex-1 text-sm font-semibold">Portfolio Overview</span>
-                  </label>
-                  {filteredProjects.map(project => (
-                    <label key={project.projectId} className="flex items-center space-x-2 p-1 rounded hover:bg-gray-50 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={selectedPrograms.includes(project.projectId)}
-                        onChange={() => handleProgramToggle(project.projectId)}
-                        className="form-checkbox h-4 w-4 text-blue-500"
-                        disabled={showPortfolio}
-                      />
-                      <span className="flex-1 text-sm">{project.name}</span>
-                      <span className="text-xs text-gray-400">{project.projectId}</span>
-                    </label>
-                  ))}
-                  {filteredProjects.length === 0 && (
-                    <div className="text-xs text-gray-400 p-2">No projects found.</div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-          <button className="flex flex-col items-center text-gray-700 hover:text-blue-600 focus:outline-none">
-            {icons.info}
-            <span className="text-xs mt-1">Info</span>
-          </button>
           <button
             className={`flex flex-col items-center focus:outline-none ${showChat ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'}`}
             onClick={() => setShowChat((v) => !v)}
@@ -393,7 +322,7 @@ function App() {
       <div className="flex flex-1 min-h-0">
         {/* Left side - Program boxes */}
         <div className={`transition-all duration-300 ${showChat ? 'w-2/3' : 'w-full'} p-4 space-y-4 overflow-y-auto`}>
-          <div className="bg-white p-4 rounded-lg shadow mb-4">
+          <div className="bg-white p-4 rounded-lg shadow mb-4 portfolio-overview">
             <div className="flex justify-between items-start mb-2">
               <div>
                 <h3 className="text-lg font-semibold">Portfolio Overview</h3>
@@ -510,7 +439,77 @@ function App() {
               ))}
             </div>
             <div className="flex flex-col gap-2">
-              <SystemPromptSelector onPromptSubmit={handlePredefinedPromptSubmit} />
+              {/* Button Row: Program Selection + Workflow Buttons */}
+              <div className="flex flex-wrap gap-2 mb-2">
+                <div className="relative">
+                  <button
+                    className="px-3 py-1.5 rounded-full text-sm font-medium transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200"
+                    onClick={() => setDropdownOpen((open) => !open)}
+                  >
+                    Context Selection
+                  </button>
+                  {dropdownOpen && (
+                    <div className="absolute left-0 bottom-full mb-2 w-80 bg-white border rounded shadow-lg z-50 p-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-semibold text-gray-700">Context Selection</span>
+                        <button onClick={() => setDropdownOpen(false)} className="text-gray-400 hover:text-gray-700 text-lg">×</button>
+                      </div>
+                      <div className="flex space-x-2 mb-2">
+                        <button
+                          onClick={handleSelectAll}
+                          className="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600"
+                        >
+                          Select All
+                        </button>
+                        <button
+                          onClick={handleDeselectAll}
+                          className="bg-gray-500 text-white px-2 py-1 rounded text-xs hover:bg-gray-600"
+                        >
+                          Deselect All
+                        </button>
+                        <input
+                          type="text"
+                          placeholder="Search..."
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          className="flex-1 p-1 border rounded text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div className="max-h-60 overflow-y-auto space-y-1">
+                        {/* Portfolio Option */}
+                        <label className="flex items-center space-x-2 p-1 rounded hover:bg-gray-50 cursor-pointer border-b pb-2 mb-2">
+                          <input
+                            type="checkbox"
+                            checked={showPortfolio}
+                            onChange={() => handleProgramToggle('PORTFOLIO')}
+                            className="form-checkbox h-4 w-4 text-blue-500"
+                            disabled={selectedPrograms.length > 0}
+                          />
+                          <span className="flex-1 text-sm font-semibold">Portfolio Overview</span>
+                        </label>
+                        {filteredProjects.map(project => (
+                          <label key={project.projectId} className="flex items-center space-x-2 p-1 rounded hover:bg-gray-50 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={selectedPrograms.includes(project.projectId)}
+                              onChange={() => handleProgramToggle(project.projectId)}
+                              className="form-checkbox h-4 w-4 text-blue-500"
+                              disabled={showPortfolio}
+                            />
+                            <span className="flex-1 text-sm">{project.name}</span>
+                            <span className="text-xs text-gray-400">{project.projectId}</span>
+                          </label>
+                        ))}
+                        {filteredProjects.length === 0 && (
+                          <div className="text-xs text-gray-400 p-2">No projects found.</div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <SystemPromptSelector onPromptSubmit={handlePredefinedPromptSubmit} />
+              </div>
+              {/* Chat input row remains unchanged */}
               <div className="flex space-x-2">
                 <input
                   type="text"

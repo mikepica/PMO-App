@@ -9,7 +9,7 @@ import { programUpdatesPrompt } from '../config/systemPrompts/program/portfolioU
 import { portfolioRisksAndMitigationsPrompt } from '../config/systemPrompts/portfolio/risksAndMitigations';
 import { programRisksAndMitigationsPrompt } from '../config/systemPrompts/program/risksAndMitigations';
 import { tradeOffsPrompt } from '../config/systemPrompts/portfolio/tradeOffs';
-import { trendsAndSurprisesPrompt } from '../config/systemPrompts/portfolio/trendsAndSurprises';
+// import { trendsAndSurprisesPrompt } from '../config/systemPrompts/portfolio/trendsAndSurprises';
 
 const PromptSelector = () => {
   const { setPrompt } = usePrompt();
@@ -22,8 +22,8 @@ const PromptSelector = () => {
     defaultPortfolioPrompt,
     portfolioUpdatesPrompt,
     portfolioRisksAndMitigationsPrompt,
-    tradeOffsPrompt,
-    trendsAndSurprisesPrompt
+    tradeOffsPrompt
+    // trendsAndSurprisesPrompt
   ];
 
   const programPrompts = [

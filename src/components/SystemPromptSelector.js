@@ -3,7 +3,7 @@ import {
   portfolioUpdatesPrompt,
   portfolioRisksAndMitigationsPrompt,
   tradeOffsPrompt,
-  trendsAndSurprisesPrompt,
+  // trendsAndSurprisesPrompt,
   programUpdatesPrompt,
   programRisksAndMitigationsPrompt
 } from '../config/systemPrompts';
@@ -21,11 +21,11 @@ const PROMPT_MAP = [
   {
     portfolio: tradeOffsPrompt,
     program: null // portfolio-only
-  },
-  {
-    portfolio: trendsAndSurprisesPrompt,
-    program: null // portfolio-only
   }
+  // {
+  //   portfolio: trendsAndSurprisesPrompt,
+  //   program: null // portfolio-only
+  // }
 ];
 
 function SystemPromptSelector({ onPromptSubmit }) {
@@ -61,7 +61,7 @@ function SystemPromptSelector({ onPromptSubmit }) {
     <div className="flex flex-wrap gap-2 mb-4 relative">
       {/* Instructional text above pre-made prompts */}
       <div className="w-full mb-2 italic text-gray-600 text-xs">
-        The below pre-made workflows will popuout a modal for program selection. General chat messages will use the Program Selector in the top banner
+        The below pre-made workflows will popuout a modal for program selection. General chat messages will use the Portfolio/Programs from Context Selection.
       </div>
       {PROMPT_MAP.map((promptObj, idx) => {
         const isPortfolioOnly = !promptObj.program;

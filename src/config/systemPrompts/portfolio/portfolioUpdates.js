@@ -1,6 +1,6 @@
 const portfolioUpdatesPrompt = {
   id: 'portfolio-updates',
-  name: 'Portfolio Updates',
+  name: 'Program Updates',
   type: 'portfolio',
   model: 'openai/gpt-4.1-mini',
   temperature: 0.2,

@@ -67,4 +67,11 @@ code {
 
 .markdown-content blockquote {
   @apply border-l-4 border-gray-300 pl-4 italic mb-4;
+}
+
+.portfolio-overview {
+  background: #fff;
+  box-shadow: 0 4px 16px 0 rgba(0,0,0,0.18);
+  border: 1px solid #e5e7eb;
+  outline: 2px solid #000;
 } 
