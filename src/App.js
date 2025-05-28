@@ -31,6 +31,8 @@ function App() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showChat, setShowChat] = useState(true);
   const [showPortfolio, setShowPortfolio] = useState(true);
+  const [showMoreExpanded, setShowMoreExpanded] = useState(false);
+  const [hasUserSubmitted, setHasUserSubmitted] = useState(false);
   const dropdownRef = useRef(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState('');
@@ -82,6 +84,9 @@ function App() {
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || (selectedPrograms.length === 0 && !showPortfolio)) return;
+
+    // Set hasUserSubmitted to true on first submission
+    setHasUserSubmitted(true);
 
     // Add user message to chat thread
     setMessages(prev => [
@@ -363,9 +368,9 @@ function App() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            {filteredProjects.map(project => {
-              const response = responses[project.projectId];
-              return (
+            {/* If user hasn't submitted yet, show all boxes */}
+            {!hasUserSubmitted ? (
+              filteredProjects.map(project => (
                 <div
                   key={project.projectId}
                   className="bg-white p-4 rounded-lg shadow"
@@ -392,21 +397,21 @@ function App() {
                     <div className="mt-2 p-2 bg-gray-50 rounded animate-pulse">
                       Processing...
                     </div>
-                  ) : response ? (
+                  ) : responses[project.projectId] ? (
                     <div className="mt-2 p-2 bg-gray-50 rounded">
                       <div
                         className="markdown-content max-h-40 overflow-hidden"
                         ref={el => (contentRefs.current[project.projectId] = el)}
                         style={{ position: 'relative' }}
                       >
-                        <ReactMarkdown>{response}</ReactMarkdown>
+                        <ReactMarkdown>{responses[project.projectId]}</ReactMarkdown>
                       </div>
                       {isOverflowing[project.projectId] && (
                         <button
                           className="mt-2 text-blue-600 underline text-sm"
                           onClick={() => {
                             setModalTitle(project.name);
-                            setModalContent(response);
+                            setModalContent(responses[project.projectId]);
                             setModalOpen(true);
                           }}
                         >
@@ -416,8 +421,124 @@ function App() {
                     </div>
                   ) : null}
                 </div>
-              );
-            })}
+              ))
+            ) : (
+              <>
+                {/* Boxes with responses */}
+                {filteredProjects
+                  .filter(project => responses[project.projectId])
+                  .map(project => {
+                    const response = responses[project.projectId];
+                    return (
+                      <div
+                        key={project.projectId}
+                        className="bg-white p-4 rounded-lg shadow"
+                      >
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <h3 className="text-lg font-semibold">{project.name}</h3>
+                            <div className="text-sm text-gray-500">{project.projectId}</div>
+                          </div>
+                          <div className={`px-2 py-1 rounded text-sm ${
+                            project.status.overall === 'On-track' ? 'bg-green-100 text-green-800' :
+                            project.status.overall === 'At-risk' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-red-100 text-red-800'
+                          }`}>
+                            {project.status.overall}
+                          </div>
+                        </div>
+                        <div className="text-sm text-gray-600 mb-2">{project.purpose}</div>
+                        <div className="flex justify-between text-sm text-gray-500 mb-2">
+                          <span>Progress: {project.status.percentComplete}%</span>
+                          <span>Phase: {project.status.phase}</span>
+                        </div>
+                        {isLoading && selectedPrograms.includes(project.projectId) ? (
+                          <div className="mt-2 p-2 bg-gray-50 rounded animate-pulse">
+                            Processing...
+                          </div>
+                        ) : response ? (
+                          <div className="mt-2 p-2 bg-gray-50 rounded">
+                            <div
+                              className="markdown-content max-h-40 overflow-hidden"
+                              ref={el => (contentRefs.current[project.projectId] = el)}
+                              style={{ position: 'relative' }}
+                            >
+                              <ReactMarkdown>{response}</ReactMarkdown>
+                            </div>
+                            {isOverflowing[project.projectId] && (
+                              <button
+                                className="mt-2 text-blue-600 underline text-sm"
+                                onClick={() => {
+                                  setModalTitle(project.name);
+                                  setModalContent(response);
+                                  setModalOpen(true);
+                                }}
+                              >
+                                Read More
+                              </button>
+                            )}
+                          </div>
+                        ) : null}
+                      </div>
+                    );
+                  })}
+
+                {/* Dividing line */}
+                {filteredProjects.some(project => responses[project.projectId]) && 
+                 filteredProjects.some(project => !responses[project.projectId]) && (
+                  <div className="col-span-2 border-t border-gray-200 my-4"></div>
+                )}
+
+                {/* Show More button */}
+                {filteredProjects.some(project => !responses[project.projectId]) && (
+                  <div className="col-span-2 flex justify-center mb-4">
+                    <button
+                      onClick={() => setShowMoreExpanded(!showMoreExpanded)}
+                      className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors"
+                    >
+                      <span>{showMoreExpanded ? 'Show Less' : 'Show More'}</span>
+                      <svg
+                        className={`w-4 h-4 transform transition-transform ${showMoreExpanded ? 'rotate-180' : ''}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+
+                {/* Boxes without responses */}
+                {showMoreExpanded && filteredProjects
+                  .filter(project => !responses[project.projectId])
+                  .map(project => (
+                    <div
+                      key={project.projectId}
+                      className="bg-white p-4 rounded-lg shadow"
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <h3 className="text-lg font-semibold">{project.name}</h3>
+                          <div className="text-sm text-gray-500">{project.projectId}</div>
+                        </div>
+                        <div className={`px-2 py-1 rounded text-sm ${
+                          project.status.overall === 'On-track' ? 'bg-green-100 text-green-800' :
+                          project.status.overall === 'At-risk' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-red-100 text-red-800'
+                        }`}>
+                          {project.status.overall}
+                        </div>
+                      </div>
+                      <div className="text-sm text-gray-600 mb-2">{project.purpose}</div>
+                      <div className="flex justify-between text-sm text-gray-500 mb-2">
+                        <span>Progress: {project.status.percentComplete}%</span>
+                        <span>Phase: {project.status.phase}</span>
+                      </div>
+                    </div>
+                  ))}
+              </>
+            )}
           </div>
         </div>
 
