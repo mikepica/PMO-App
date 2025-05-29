@@ -694,7 +694,7 @@ function App() {
                       ? 'bg-gray-400 cursor-not-allowed'
                       : 'bg-blue-500 hover:bg-blue-600'
                   } transition-colors`}
-                  disabled={isLoading || !inputMessage.trim() || selectedPrograms.length === 0}
+                  disabled={isLoading || !inputMessage.trim() || (!showPortfolio && selectedPrograms.length === 0)}
                 >
                   {isLoading ? 'Sending...' : 'Send'}
                 </button>
