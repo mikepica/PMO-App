@@ -50,9 +50,7 @@ function SystemPromptSelector({ onPromptSubmit }) {
     if (contextType === 'portfolio') {
       onPromptSubmit({ prompt: promptObj.portfolio, context: 'portfolio' });
     } else {
-      selectedPrograms.forEach(programId => {
-        onPromptSubmit({ prompt: promptObj.program, context: 'program', programId });
-      });
+      onPromptSubmit({ prompt: promptObj.program, context: 'program', selectedPrograms });
     }
     handleClose();
   };

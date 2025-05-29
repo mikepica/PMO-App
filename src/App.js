@@ -242,32 +242,6 @@ function App() {
           }).then(response => response.json())
             .then(result => ({ type: 'portfolio', content: result.choices[0].message.content }))
         );
-      } else if (data.context === 'program' && data.programId) {
-        const program = programs.projects.find(p => p.projectId === data.programId);
-        promises.push(
-          fetch(API_CONFIG.apiUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${API_CONFIG.apiKey}`,
-              'HTTP-Referer': window.location.origin,
-              'X-Title': 'Program Management Assistant'
-            },
-            body: JSON.stringify({
-              model: getModelConfig(data.prompt.model, data.prompt.temperature).model,
-              temperature: getModelConfig(data.prompt.model, data.prompt.temperature).temperature,
-              messages: [
-                { role: 'system', content: data.prompt.content },
-                {
-                  role: 'user',
-                  content: `Program Context: ${JSON.stringify(program)}\n\nUser Query: `
-                }
-              ],
-              max_tokens: 1000
-            })
-          }).then(response => response.json())
-            .then(result => ({ type: 'program', programId: data.programId, content: result.choices[0].message.content }))
-        );
       } else if (data.context === 'program' && data.selectedPrograms) {
         // Multi-program support
         data.selectedPrograms.forEach(programId => {
@@ -317,8 +291,10 @@ function App() {
       }
     } catch (error) {
       console.error('Error fetching responses:', error);
-      if (data.context === 'program' && data.programId) {
-        newResponses[data.programId] = 'Error processing request. Please try again.';
+      if (data.context === 'program' && data.selectedPrograms) {
+        data.selectedPrograms.forEach(programId => {
+          newResponses[programId] = 'Error processing request. Please try again.';
+        });
       }
       if (data.context === 'portfolio') {
         setPortfolioResponse('Error processing portfolio request. Please try again.');
