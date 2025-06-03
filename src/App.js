@@ -130,8 +130,7 @@ function App() {
                   role: 'user',
                   content: `Portfolio Context: ${JSON.stringify(programs)}\n\nUser Query: ${inputMessage}`
                 }
-              ],
-              max_tokens: 1000
+              ]
             })
           }).then(response => response.json())
             .then(data => ({ type: 'portfolio', content: data.choices[0].message.content }))
@@ -159,8 +158,7 @@ function App() {
                   role: 'user',
                   content: `Program Context: ${JSON.stringify(program)}\n\nUser Query: ${inputMessage}`
                 }
-              ],
-              max_tokens: 1000
+              ]
             })
           }).then(response => response.json())
             .then(data => ({ type: 'program', programId, content: data.choices[0].message.content }))
@@ -236,8 +234,7 @@ function App() {
                   role: 'user',
                   content: `Portfolio Context: ${JSON.stringify(programs.projects)}\n\nUser Query: `
                 }
-              ],
-              max_tokens: 1000
+              ]
             })
           }).then(response => response.json())
             .then(result => ({ type: 'portfolio', content: result.choices[0].message.content }))
@@ -264,8 +261,7 @@ function App() {
                     role: 'user',
                     content: `Program Context: ${JSON.stringify(program)}\n\nUser Query: `
                   }
-                ],
-                max_tokens: 1000
+                ]
               })
             }).then(response => response.json())
               .then(result => ({ type: 'program', programId, content: result.choices[0].message.content }))
