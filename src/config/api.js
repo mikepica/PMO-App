@@ -1,16 +1,16 @@
 export const API_CONFIG = {
-  apiKey: process.env.REACT_APP_OPENROUTER_API_KEY,
+  apiKey: process.env.REACT_APP_OPENAI_API_KEY,
   models: {
-    '4.1-nano': 'openai/gpt-4.1-nano',
-    '4.1': 'openai/gpt-4.1'
+    'gpt-4': 'gpt-4.1-nano',
+    'gpt-4-turbo': 'gpt-4.1',
   },
-  defaultModel: 'openai/gpt-4.1-nano',
+  defaultModel: 'gpt-4.1-nano',
   defaultTemperature: 0.7,
-  apiUrl: process.env.REACT_APP_OPENROUTER_API_URL || 'https://openrouter.ai/api/v1/chat/completions',
+  apiUrl: 'https://api.openai.com/v1/chat/completions',
 };
 
 // Get model configuration
-export const getModelConfig = (modelKey = '4.1-nano', temperature = 0.7) => {
+export const getModelConfig = (modelKey = 'gpt-4.1-nano', temperature = 0.7) => {
   return {
     ...API_CONFIG,
     model: API_CONFIG.models[modelKey] || API_CONFIG.defaultModel,
@@ -21,7 +21,7 @@ export const getModelConfig = (modelKey = '4.1-nano', temperature = 0.7) => {
 // Validate required environment variables
 const validateConfig = () => {
   if (!API_CONFIG.apiKey) {
-    console.error('REACT_APP_OPENROUTER_API_KEY is not set in environment variables');
+    console.error('REACT_APP_OPENAI_API_KEY is not set in environment variables');
   }
 };
 

@@ -2,7 +2,7 @@ const portfolioRisksAndMitigationsPrompt = {
   id: 'portfolio-risks-mitigations',
   name: 'Program Risks and Mitigations',
   type: 'portfolio',
-  model: 'openai/gpt-4.1-mini',
+  model: 'gpt-4.1-mini',
   temperature: 0.2,
   preview: 'Evaluate portfolio-wide risks, their impact, and effectiveness of mitigation strategies',
   content: `You are an expert Project and Portfolio Manager with a strong focus on portfolio management for R&D projects at a large pharmaceutical company.

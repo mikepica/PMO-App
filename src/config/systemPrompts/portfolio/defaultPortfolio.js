@@ -2,7 +2,7 @@ const defaultPortfolioPrompt = {
   id: 'default-portfolio',
   name: 'Default Portfolio',
   type: 'portfolio',
-  model: 'openai/gpt-4.1',
+  model: 'gpt-4.1',
   temperature: 0.4,
   preview: 'Analyze portfolio-level insights and cross-program dependencies',
   content: `You are an expert Portfolio Manager specializing in R&D project portfolio management at a large pharmaceutical company.

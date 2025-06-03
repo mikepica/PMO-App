@@ -17,7 +17,7 @@ A React application that helps manage and analyze multiple programs through an A
    ```bash
    npm install
    ```
-3. Create a `.env` file in the root directory and add your OpenRouter API key:
+3. Create a `.env` file in the root directory and add your OpenAI API key:
    ```
    REACT_APP_OPENAI_API_KEY=your_api_key_here
    ```
@@ -43,4 +43,4 @@ A React application that helps manage and analyze multiple programs through an A
 
 - React
 - Tailwind CSS
-- OpenRouter API (GPT-4.1 nano) 
+- OpenAI API (GPT-4) 

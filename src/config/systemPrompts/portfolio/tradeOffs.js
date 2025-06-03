@@ -2,7 +2,7 @@ const tradeOffsPrompt = {
   id: 'trade-offs',
   name: 'Trade-offs',
   type: 'portfolio',
-  model: 'openai/gpt-4.1',
+  model: 'gpt-4.1',
   temperature: 0.7,
   preview: 'Identify interdependencies and analyze trade-offs to optimize portfolio value',
   content: `
