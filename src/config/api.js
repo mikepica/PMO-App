@@ -1,8 +1,9 @@
 export const API_CONFIG = {
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
   models: {
-    'gpt-4': 'gpt-4.1-nano',
-    'gpt-4-turbo': 'gpt-4.1',
+    'gpt-4.1-mini': 'gpt-4.1-mini',
+    'gpt-4.1': 'gpt-4.1',
+    'gpt-4.1-nano': 'gpt-4.1-nano',
   },
   defaultModel: 'gpt-4.1-nano',
   defaultTemperature: 0.7,
