@@ -1,0 +1,99 @@
+{
+  "projectId": "PRJ-004",
+  "name": "Decentralized Trial Logistics Platform",
+  "purpose": "Streamline direct-to-patient drug shipping with temperature tracking.",
+  "status": {
+    "overall": "Delayed",
+    "phase": "Execution",
+    "percentComplete": 41
+  },
+  "timeline": {
+    "start": "2024-05-01",
+    "end": "2025-09-30"
+  },
+  "owner": {
+    "programManager": "Anders Hoff",
+    "sponsor": "Head of Supply Chain",
+    "steeringCommittee": ["QA GxP", "Digital Health"]
+  },
+  "risks": [
+    {
+      "id": "R1",
+      "description": "3PL partner unable to integrate real-time IoT feeds.",
+      "impact": 3,
+      "likelihood": 4,
+      "rating": 12,
+      "mitigation": "Escalate contract renegotiation; explore alternate 3PL.",
+      "status": "Escalated"
+    },
+    {
+      "id": "R2",
+      "description": "Cold-chain excursions due to device sensor drift.",
+      "impact": 4,
+      "likelihood": 2,
+      "rating": 8,
+      "mitigation": "Increase calibration frequency; add drift-alert thresholds.",
+      "status": "Active"
+    },
+    {
+      "id": "R3",
+      "description": "GDPR compliance risk for patient address storage.",
+      "impact": 2,
+      "likelihood": 4,
+      "rating": 8,
+      "mitigation": "Implement tokenized address service; perform DPIA.",
+      "status": "Active"
+    }
+  ],
+  "achievements": [
+    {
+      "date": "2025-01-12",
+      "summary": "Completed validation of temp-logger REST API."
+    },
+    {
+      "date": "2025-03-05",
+      "summary": "Executed first live shipment to rural patient with zero deviations."
+    },
+    {
+      "date": "2025-04-19",
+      "summary": "Achieved SOC2 Type I certification for logistics platform."
+    }
+  ],
+  "deliverables": [
+    {
+      "id": "D1",
+      "description": "Live shipment dashboard",
+      "due": "2025-07-15",
+      "status": "Not Started",
+      "owner": "UX Lead",
+      "dependencies": ["D2"]
+    },
+    {
+      "id": "D2",
+      "description": "3PL API connectivity",
+      "due": "2025-05-31",
+      "status": "Delayed",
+      "owner": "Integration Team",
+      "dependencies": []
+    },
+    {
+      "id": "D3",
+      "description": "Cold-chain excursion alerting engine",
+      "due": "2025-08-31",
+      "status": "Planned",
+      "owner": "IoT Engineering",
+      "dependencies": ["D2"]
+    }
+  ],
+  "budget": {
+    "ytdForecast": 1.8,
+    "ytdActuals": 1.67,
+    "prevMonthForecast": 0.15,
+    "prevMonthActuals": 0.09
+  },
+  "keyMetrics": {
+    "resourceFTE": 7,
+    "milestoneVarianceDays": 31
+  },
+  "notes": "Timeline shift under review; may extend end date 3 months."
+}

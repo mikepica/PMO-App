@@ -1,0 +1,99 @@
+{
+  "projectId": "PRJ-006",
+  "name": "Clinical Supply Demand AI Forecaster",
+  "purpose": "Cut drug wastage by 25 % via rolling demand algorithms per site enrolment curve.",
+  "status": {
+    "overall": "On-track",
+    "phase": "Execution",
+    "percentComplete": 67
+  },
+  "timeline": {
+    "start": "2024-02-14",
+    "end": "2025-08-31"
+  },
+  "owner": {
+    "programManager": "Grace Kim",
+    "sponsor": "Head of Clinical Supply",
+    "steeringCommittee": ["Finance BP", "Stat Leadership"]
+  },
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Slow enrolment causes sparse data for model training.",
+      "impact": 3,
+      "likelihood": 3,
+      "rating": 9,
+      "mitigation": "Use Bayesian priors; blend global averages until steady state.",
+      "status": "Active"
+    },
+    {
+      "id": "R2",
+      "description": "API downtime between IRT and forecasting engine.",
+      "impact": 3,
+      "likelihood": 2,
+      "rating": 6,
+      "mitigation": "Set up retry buffer; implement fallback rule-based forecast.",
+      "status": "Watch"
+    },
+    {
+      "id": "R3",
+      "description": "Unexpected manufacturing delays for comparator drug.",
+      "impact": 4,
+      "likelihood": 2,
+      "rating": 8,
+      "mitigation": "Include stochastic supply side-constraints in model.",
+      "status": "Active"
+    }
+  ],
+  "achievements": [
+    {
+      "date": "2025-04-05",
+      "summary": "Draft model reduced supply overage by 19 % in Phase Ib roll-out."
+    },
+    {
+      "date": "2025-04-30",
+      "summary": "Integrated live IRT feed covering 80 % of active studies."
+    },
+    {
+      "date": "2025-05-12",
+      "summary": "Ran first what-if scenario for supply shock, endorsed by Ops LT."
+    }
+  ],
+  "deliverables": [
+    {
+      "id": "D1",
+      "description": "Forecasting micro-service live in production",
+      "due": "2025-08-01",
+      "status": "In Progress",
+      "owner": "DevOps Lead",
+      "dependencies": []
+    },
+    {
+      "id": "D2",
+      "description": "Self-service dashboard for supply planners",
+      "due": "2025-07-15",
+      "status": "Planned",
+      "owner": "Analytics",
+      "dependencies": ["D1"]
+    },
+    {
+      "id": "D3",
+      "description": "Model validation dossier (GxP)",
+      "due": "2025-08-15",
+      "status": "Not Started",
+      "owner": "Quality Assurance",
+      "dependencies": ["D1"]
+    }
+  ],
+  "budget": {
+    "ytdForecast": 1.15,
+    "ytdActuals": 1.10,
+    "prevMonthForecast": 0.11,
+    "prevMonthActuals": 0.12
+  },
+  "keyMetrics": {
+    "resourceFTE": 6,
+    "milestoneVarianceDays": -1
+  },
+  "notes": ""
+}

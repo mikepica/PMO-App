@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { programs } from './data/programs';
+import { programs } from './data/index';
 import { defaultPortfolioPrompt } from './config/systemPrompts';
 import defaultProgramPrompt from './config/systemPrompts/program/defaultProgram';
 import { API_CONFIG, getModelConfig } from './config/api';

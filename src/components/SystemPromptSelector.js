@@ -7,7 +7,7 @@ import {
   programUpdatesPrompt,
   programRisksAndMitigationsPrompt
 } from '../config/systemPrompts';
-import { programs } from '../data/programs';
+import { programs } from '../data/index';
 
 const PROMPT_MAP = [
   {

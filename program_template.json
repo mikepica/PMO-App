@@ -1,0 +1,57 @@
+{
+  "projectId": "PRJ-XXX",
+  "name": "Project Name",
+  "purpose": "Project purpose description",
+  "status": {
+    "overall": "On-track",
+    "phase": "Planning",
+    "percentComplete": 0
+  },
+  "timeline": {
+    "start": "YYYY-MM-DD",
+    "end": "YYYY-MM-DD"
+  },
+  "owner": {
+    "programManager": "Name",
+    "sponsor": "Role",
+    "steeringCommittee": ["Role1", "Role2"]
+  },
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Risk description",
+      "impact": 1,
+      "likelihood": 1,
+      "rating": 1,
+      "mitigation": "Mitigation strategy",
+      "status": "Active"
+    }
+  ],
+  "achievements": [
+    {
+      "date": "YYYY-MM-DD",
+      "summary": "Achievement description"
+    }
+  ],
+  "deliverables": [
+    {
+      "id": "D1",
+      "description": "Deliverable description",
+      "due": "YYYY-MM-DD",
+      "status": "Not Started",
+      "owner": "Owner Name",
+      "dependencies": []
+    }
+  ],
+  "budget": {
+    "ytdForecast": 0.0,
+    "ytdActuals": 0.0,
+    "prevMonthForecast": 0.0,
+    "prevMonthActuals": 0.0
+  },
+  "keyMetrics": {
+    "resourceFTE": 0,
+    "milestoneVarianceDays": 0
+  },
+  "notes": ""
+} 

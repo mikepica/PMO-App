@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { programs } from '../data/programs';
+import { programs } from '../data/index';
 
 function PromptSelectorPopout({ prompt, onClose, onSubmit }) {
   const [selectedPrograms, setSelectedPrograms] = useState(programs.projects.map(p => p.projectId));
