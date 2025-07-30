@@ -1,0 +1,217 @@
+{
+  "projectId": "MLDX",
+  "name": "Machine Learning Data Analytics",
+  "alternateName": "Digital Research Platform",
+  "projectGoal": "To enhance data processing capabilities through advanced machine learning algorithms and automation",
+
+  "status": [
+    {
+      "id": "S1",
+      "description": "Overall Status",
+      "ragStatus": "Amber",
+      "comments": null
+    },
+    {
+      "id": "S2",
+      "description": "Schedule",
+      "ragStatus": "Red",
+      "comments": null
+    },
+    {
+      "id": "S3",
+      "description": "Scope",
+      "ragStatus": "Green",
+      "comments": null
+    },
+    {
+      "id": "S4",
+      "description": "Resources",
+      "ragStatus": "Amber",
+      "comments": null
+    },
+    {
+      "id": "S5",
+      "description": "Risk & Issues",
+      "ragStatus": "Red",
+      "comments": null
+    },
+    {
+      "id": "S6",
+      "description": "Spend",
+      "ragStatus": "Green",
+      "comments": null
+    },
+    {
+      "id": "S7",
+      "description": "Business Readiness",
+      "ragStatus": "Amber",
+      "comments": null
+    },
+    {
+      "id": "S8",
+      "description": "Benefits Realization",
+      "ragStatus": "Green",
+      "comments": null
+    }  
+  ],
+  
+  "timeline": {
+    "start": "2023-03-15",
+    "end": "2026-08-30"
+  },
+
+  "owner": {
+    "programlead": "Sarah Johnson",
+    "sponsor": "Michael Chen",
+    "businessLeads": ["David Martinez", "Lisa Thompson", "James Wilson"]
+  },
+
+  
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Legacy data processing servers are approaching capacity limits and may cause system bottlenecks",
+      "impact": 4,
+      "likelihood": 2,
+      "rating": 8,
+      "mitigation": "Cloud migration assessment completed; infrastructure upgrade proposal finalized. IT team preparing migration plan for execution by Q3's end to implement new cloud platform. Vendor to provide cost estimates and migration timeline, requiring additional project management support.",
+      "status": "Active",
+      "owner": "Lisa Thompson",
+      "escalationAction": "Budget reallocation required; Approve cloud infrastructure migration proposal with AWS",
+      "workstream": "Infrastructure & Platform"
+    },
+    {
+      "id": "R2",
+      "description": "Current system lacks real-time monitoring capabilities and user feedback mechanisms for quality assurance metrics.",
+      "impact": 2,
+      "likelihood": 4,
+      "rating": 8,
+      "mitigation": "DevOps, Analytics Team and Business Intelligence to develop monitoring implementation roadmap.",
+      "status": "Active",
+      "owner": "Alex Rodriguez, Lisa Thompson",
+      "escalationAction": null,
+      "workstream": "Analytics Platform"
+    }
+  ],
+
+"achievements": [
+  {
+    "date": "2025-06-30",
+    "workstream": "Data Integration",
+    "summary": "Customer behavior data migration to Azure Data Lake completed"
+  },
+  {
+    "date": "2025-06-30",
+    "workstream": "Data Integration",
+    "summary": "API documentation transfer to SharePoint in progress"
+  },
+  {
+    "date": "2025-06-30",
+    "workstream": "Data Integration",
+    "summary": "Enterprise Customer Database integrated with external market research datasets provided to IT for processing"
+  },
+  {
+    "date": "2025-06-30",
+    "workstream": "Algorithm Development",
+    "summary": "Collaborative Analytics Intelligence Network (CAIN) partnership established for predictive modeling enhancement"
+  },
+  {
+    "date": "2025-06-30",
+    "workstream": "Algorithm Development",
+    "summary": "TensorFlow, PyTorch performance testing initiated for recommendation engine optimization"
+  },
+  {
+    "date": "2025-06-30",
+    "workstream": "Algorithm Development",
+    "summary": "Internal feature engineering pipeline development started"
+  },
+  {
+    "date": "2025-06-30",
+    "workstream": "Platform Application",
+    "summary": "Digital Analytics Dashboard workflow presented to stakeholders, received preliminary approval"
+  },
+  {
+    "date": "2025-06-30",
+    "workstream": "Platform Application",
+    "summary": "DataFlow being utilized for customer segmentation analysis."
+  },
+   {
+    "date": "2025-06-30",
+    "workstream": "Platform Application",
+    "summary": "Business Intelligence Suite (BISuite) deployment completed; Real-time Analytics Engine (RAE) in User Acceptance Testing"
+  },
+   {
+    "date": "2025-06-30",
+    "workstream": "Platform Application",
+    "summary": "Pilot predictive maintenance project SENSOR42 in progress at DELTA Labs"
+  },
+  {
+    "date": "2025-06-30",
+    "workstream": "Platform Application",
+    "summary": "Customer Experience Optimization (CEO) automated workflow library initiated"
+  }
+],
+  
+  "scorecardDeliverables": [
+    {
+      "id": "D1",
+      "description": "Digital analytics tools deployed across business units, driving reduction in processing times (5 hrs) & increasing data accuracy (95%+)",
+      "businessValue": "Digital Analytics Platform and automated optimization will accelerate decision-making from Data Collection to Business Insights by 40% (8+ week acceleration leveraging AI and automation). GenAI will accelerate reporting delivery by 2 to 4 weeks and enable analysis of previously complex data patterns and relationships.",
+      "due": "Q3 2025",
+      "ragStatus": "Amber",
+      "percentComplete": 73,
+      "comments": "Progressing well: 22/35 business units where Digital Analytics deployed, 4/7 units leveraging automated optimization; 2/3 GenAI applications (Customer Experience) automated workflow in progress. Data consolidation and training materials development accelerating to support platform readiness. Q3 focus: deploy Real-time Analytics Engine on Azure, establish Digital Analytics KPIs, deliver DataFlow/TensorFlow integration and continue predictive maintenance execution for GenAI projects. 3 new analysts started, currently in training phase"
+    }
+  ],
+
+"keyNextSteps": [
+  {
+    "workstream": "Data Integration",
+    "description": "Complete customer survey data extraction from Business Intelligence Platform (BIP)"
+  },
+  {
+    "workstream": "Data Integration",
+    "description": "Standardize and load processed data into Azure Data Lake"
+  },
+  {
+    "workstream": "Data Integration",
+    "description": "Develop requirements for analytics database (e.g., duplicate record handling)"
+  },
+  {
+    "workstream": "Algorithm Development",
+    "description": "Finalize Optimization Engine v3 training (Customer Experience)"
+  },
+  {
+    "workstream": "Algorithm Development",
+    "description": "Deploy Digital Analytics production pipelines"
+  },
+  {
+    "workstream": "Algorithm Development",
+    "description": "Enhance DataFlow scoring integration and TensorFlow model performance validation"
+  },
+  {
+    "workstream": "Platform Application",
+    "description": "Launch Real-time Analytics Engine on Azure by Q3"
+  },
+  {
+    "workstream": "Platform Application",
+    "description": "Implement data filtering pipeline and clustering analysis (market segmentation)"
+  },
+  {
+    "workstream": "Project Management",
+    "description": "Establish Digital Analytics KPIs and assessment framework with IT"
+  }
+],
+
+  "budget": {
+    "ytdForecast": null,
+    "ytdActuals": null,
+    "prevMonthForecast": null,
+    "prevMonthActuals": null
+  },
+
+  "keyMetrics": {
+    "resourceFTE": null,
+    "milestoneVarianceDays": null
+  }
+}
