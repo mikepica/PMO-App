@@ -249,8 +249,14 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
       });
 
       // Build conversation messages including history
+      const systemContent = systemPrompt || 'You are a helpful assistant.';
+      if (!systemPrompt) {
+        console.error('❌ CRITICAL: System prompt is null/empty at API call time!');
+        console.warn('⚠️  Using emergency fallback prompt for API request');
+      }
+      
       const conversationMessages = [
-        { role: 'system', content: systemPrompt },
+        { role: 'system', content: systemContent },
         ...messages.map(msg => ({
           role: msg.sender === 'user' ? 'user' : 'assistant',
           content: msg.text

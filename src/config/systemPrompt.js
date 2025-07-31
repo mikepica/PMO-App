@@ -1,15 +1,6 @@
 import yaml from 'js-yaml';
 
-const loadSystemPrompt = async () => {
-  try {
-    const response = await fetch('/system-prompt.yaml');
-    const yamlText = await response.text();
-    const config = yaml.load(yamlText);
-    return config.system_prompt;
-  } catch (error) {
-    console.error('Error loading system prompt:', error);
-    // Fallback system prompt
-    return `You are an expert Portfolio Management Assistant specializing in project portfolio management and analysis.
+const DEFAULT_SYSTEM_PROMPT = `You are an expert Portfolio Management Assistant specializing in project portfolio management and analysis.
 
 Your role is to:
 - Analyze project data and provide insights on status, risks, achievements, and priorities
@@ -32,6 +23,38 @@ Communication Guidelines:
 - Include specific data points and metrics when available
 - Highlight critical issues that need immediate attention
 - Suggest concrete next steps and recommendations`;
+
+const loadSystemPrompt = async () => {
+  try {
+    console.log('🔄 Loading system prompt from /system-prompt.yaml...');
+    
+    const response = await fetch('/system-prompt.yaml');
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const yamlText = await response.text();
+    if (!yamlText || yamlText.trim() === '') {
+      throw new Error('Empty YAML response');
+    }
+    
+    const config = yaml.load(yamlText);
+    if (!config || typeof config !== 'object') {
+      throw new Error('Invalid YAML structure');
+    }
+    
+    const systemPrompt = config.system_prompt;
+    if (!systemPrompt || typeof systemPrompt !== 'string' || systemPrompt.trim() === '') {
+      throw new Error('system_prompt field is missing, null, or empty');
+    }
+    
+    console.log('✅ System prompt loaded successfully from YAML');
+    return systemPrompt.trim();
+  } catch (error) {
+    console.error('❌ SYSTEM PROMPT FALLBACK TRIGGERED:', error.message);
+    console.warn('⚠️  Using default system prompt instead of YAML configuration');
+    console.log('🔧 Check: /public/system-prompt.yaml file exists and contains valid YAML with system_prompt field');
+    return DEFAULT_SYSTEM_PROMPT;
   }
 };
 
