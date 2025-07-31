@@ -1,13 +1,7 @@
 // Import metadata
 import metadata from './metadata.json' with { type: 'json' };
 
-// Import current month project files (for backward compatibility)
-import prj001Current from './PRJ-001.json' with { type: 'json' };
-import prj002Current from './PRJ-002.json' with { type: 'json' };
-import prj003Current from './PRJ-003.json' with { type: 'json' };
-import dummyProjectCurrent from './dummy_project.json' with { type: 'json' };
-
-// Import historical project files
+// Import all project files by month
 import prj001_2025_05 from './2025-05/PRJ-001.json' with { type: 'json' };
 import prj001_2025_06 from './2025-06/PRJ-001.json' with { type: 'json' };
 import prj001_2025_07 from './2025-07/PRJ-001.json' with { type: 'json' };
@@ -31,13 +25,9 @@ const projectsByMonth = {
   '2025-07': [prj001_2025_07, prj002_2025_07, prj003_2025_07, dummyProject_2025_07]
 };
 
-// Current month projects for backward compatibility
-const projects = [
-  prj001Current,
-  prj002Current,
-  prj003Current,
-  dummyProjectCurrent
-];
+// Current month projects (using the latest available month)
+const currentMonth = metadata.currentMonth || '2025-07';
+const projects = projectsByMonth[currentMonth] || [];
 
 // Main programs object that maintains compatibility with original structure
 export const programs = {
