@@ -7,7 +7,19 @@ import ReactMarkdown from 'react-markdown';
 import ProjectTabs from './components/ProjectTabs';
 import ProjectDetailView from './components/ProjectDetailView';
 import AIContextSelector from './components/AIContextSelector';
+import ChatThreadManager from './components/ChatThreadManager';
 import Modal from './components/Modal';
+import { 
+  initializeDefaultThread, 
+  getThreadsArray, 
+  getCurrentThread, 
+  createThread, 
+  deleteThread, 
+  setCurrentThread,
+  updateThreadMessages,
+  updateThreadContext,
+  updateThreadName 
+} from './utils/threadStorage';
 
 // Simple SVG icons for demonstration
 const icons = {
@@ -59,15 +71,11 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
   const [selectedMonth, setSelectedMonth] = useState(initialSelectedMonth || currentMonth);
   const [contextMonths, setContextMonths] = useState([initialSelectedMonth || currentMonth]);
 
-  // Sync with parent component
-  const handleMonthChange = (month) => {
-    setSelectedMonth(month);
-    if (onMonthChangeFromApp) {
-      onMonthChangeFromApp(month);
-    }
-  };
+  // Thread-related state
+  const [threads, setThreads] = useState([]);
+  const [currentThreadId, setCurrentThreadId] = useState(null);
   
-  // Original state
+  // Chat state
   const [contextProjects, setContextProjects] = useState(programs.projects.map(p => p.projectId));
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -80,6 +88,18 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
   const [modalTitle, setModalTitle] = useState('');
   const [systemPrompt, setSystemPrompt] = useState('');
 
+  // Sync with parent component
+  const handleMonthChange = (month) => {
+    setSelectedMonth(month);
+    if (onMonthChangeFromApp) {
+      onMonthChangeFromApp(month);
+    }
+    // Save month change to current thread
+    if (currentThreadId) {
+      updateThreadContext(currentThreadId, contextProjects, contextMonths, month);
+    }
+  };
+
   // Extract current projectId from URL
   const currentProjectId = location.pathname.split('/').pop();
 
@@ -90,16 +110,107 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
     });
   }, []);
 
+  // Initialize threads on component mount
+  useEffect(() => {
+    const loadThreads = () => {
+      const allThreads = getThreadsArray();
+      setThreads(allThreads);
+      
+      const currentThread = getCurrentThread();
+      if (currentThread) {
+        setCurrentThreadId(currentThread.id);
+        setMessages(currentThread.messages || []);
+        setContextProjects(currentThread.contextProjects || programs.projects.map(p => p.projectId));
+        setContextMonths(currentThread.contextMonths || [currentMonth]);
+        if (currentThread.selectedMonth) {
+          setSelectedMonth(currentThread.selectedMonth);
+          if (onMonthChangeFromApp) {
+            onMonthChangeFromApp(currentThread.selectedMonth);
+          }
+        }
+      } else if (allThreads.length === 0) {
+        // Create initial thread if none exist
+        const newThread = initializeDefaultThread();
+        if (newThread) {
+          setCurrentThreadId(newThread.id);
+          setThreads([newThread]);
+        }
+      }
+    };
+    
+    loadThreads();
+  }, [currentMonth, onMonthChangeFromApp]);
+
   const handleTabSelect = (projectId) => {
     navigate(`/project/${projectId}`);
   };
 
   const handleContextToggle = (projectId) => {
-    setContextProjects(prev => 
-      prev.includes(projectId)
-        ? prev.filter(id => id !== projectId)
-        : [...prev, projectId]
-    );
+    const newContextProjects = contextProjects.includes(projectId)
+      ? contextProjects.filter(id => id !== projectId)
+      : [...contextProjects, projectId];
+    
+    setContextProjects(newContextProjects);
+    
+    // Save context change to current thread
+    if (currentThreadId) {
+      updateThreadContext(currentThreadId, newContextProjects, contextMonths, selectedMonth);
+    }
+  };
+
+  // Thread management functions
+  const handleNewThread = () => {
+    const newThread = createThread();
+    setThreads(getThreadsArray());
+    setCurrentThreadId(newThread.id);
+    setMessages([]);
+    // Keep current context settings for new thread
+    updateThreadContext(newThread.id, contextProjects, contextMonths, selectedMonth);
+  };
+
+  const handleThreadSelect = (threadId) => {
+    if (threadId === currentThreadId) return;
+    
+    const thread = threads.find(t => t.id === threadId);
+    if (thread) {
+      setCurrentThread(threadId);
+      setCurrentThreadId(threadId);
+      setMessages(thread.messages || []);
+      setContextProjects(thread.contextProjects || programs.projects.map(p => p.projectId));
+      setContextMonths(thread.contextMonths || [currentMonth]);
+      
+      if (thread.selectedMonth) {
+        setSelectedMonth(thread.selectedMonth);
+        if (onMonthChangeFromApp) {
+          onMonthChangeFromApp(thread.selectedMonth);
+        }
+      }
+    }
+  };
+
+  const handleDeleteThread = (threadId) => {
+    deleteThread(threadId);
+    const updatedThreads = getThreadsArray();
+    setThreads(updatedThreads);
+    
+    if (threadId === currentThreadId) {
+      if (updatedThreads.length > 0) {
+        // Switch to the most recent thread
+        handleThreadSelect(updatedThreads[0].id);
+      } else {
+        // Create new thread if none left
+        handleNewThread();
+      }
+    }
+  };
+
+  const handleContextMonthsChange = (newContextMonths) => {
+    setContextMonths(newContextMonths);
+    
+    // Save context change to current thread
+    if (currentThreadId) {
+      updateThreadContext(currentThreadId, contextProjects, newContextMonths, selectedMonth);
+    }
   };
 
   const handleSendMessage = async () => {
@@ -111,11 +222,18 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
       text: inputMessage,
       sender: 'user'
     };
-    setMessages(prev => [...prev, userMessage]);
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
     
     const currentInput = inputMessage;
     setInputMessage('');
     setIsLoading(true);
+
+    // Update thread name with first message if needed
+    if (currentThreadId && messages.length === 0) {
+      updateThreadName(currentThreadId, currentInput);
+      setThreads(getThreadsArray()); // Refresh threads to show new name
+    }
 
     try {
       // Get context projects data from selected months
@@ -165,7 +283,13 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
         sender: 'assistant'
       };
       
-      setMessages(prev => [...prev, assistantMessage]);
+      const finalMessages = [...newMessages, assistantMessage];
+      setMessages(finalMessages);
+      
+      // Save messages to current thread
+      if (currentThreadId) {
+        updateThreadMessages(currentThreadId, finalMessages);
+      }
     } catch (error) {
       console.error('Error fetching response:', error);
       const errorMessage = {
@@ -173,7 +297,14 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
         text: 'Error processing request. Please try again.',
         sender: 'assistant'
       };
-      setMessages(prev => [...prev, errorMessage]);
+      
+      const finalMessages = [...newMessages, errorMessage];
+      setMessages(finalMessages);
+      
+      // Save messages to current thread even on error
+      if (currentThreadId) {
+        updateThreadMessages(currentThreadId, finalMessages);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -223,15 +354,22 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
         {/* Right side - Chat interface */}
         {showChat && (
           <div className="w-1/3 bg-white p-4 flex flex-col h-full min-h-0 transition-all duration-300">
+            <ChatThreadManager
+              threads={threads}
+              currentThreadId={currentThreadId}
+              onNewThread={handleNewThread}
+              onThreadSelect={handleThreadSelect}
+              onDeleteThread={handleDeleteThread}
+            />
+            
             <div className="mb-4">
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">AI Assistant</h3>
               <div className="text-sm text-gray-600 mb-3">
                 Context: {contextProjects.length} projects selected
               </div>
               <AIContextSelector
                 availableMonths={availableMonths}
                 selectedMonths={contextMonths}
-                onMonthsChange={setContextMonths}
+                onMonthsChange={handleContextMonthsChange}
                 currentMonth={currentMonth}
               />
             </div>
