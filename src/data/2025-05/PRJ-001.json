@@ -1,0 +1,90 @@
+{
+  "projectId": "PRJ-001",
+  "name": "AI-Driven Trial Design Optimizer",
+  "purpose": "Reduce Phase II protocol amendments by using machine-learning simulations to pre-validate eligibility and endpoints.",
+  "status": {
+    "overall": "On-track",
+    "phase": "Execution",
+    "percentComplete": 42
+  },
+  "timeline": {
+    "start": "2024-10-01",
+    "end": "2025-12-31"
+  },
+  "owner": {
+    "programManager": "Elena Ruiz",
+    "sponsor": "Head of Clinical Ops",
+    "steeringCommittee": ["CDO", "VP Biometrics"]
+  },
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Regulatory acceptance of simulated arms may lag.",
+      "impact": 4,
+      "likelihood": 4,
+      "rating": 16,
+      "mitigation": "Scheduling FDA pre-submission meeting for Q3.",
+      "status": "Active"
+    },
+    {
+      "id": "R2",
+      "description": "Insufficient historical trial data to train robust simulation models.",
+      "impact": 3,
+      "likelihood": 3,
+      "rating": 9,
+      "mitigation": "License external datasets; use data-augmentation techniques.",
+      "status": "Active"
+    }
+  ],
+  "achievements": [
+    {
+      "date": "2025-03-20",
+      "summary": "Prototype cut protocol-cycle time by 18 days in lymphoma use-case."
+    },
+    {
+      "date": "2025-04-22",
+      "summary": "Achieved 0.91 AUC predicting amendment likelihood on 220 legacy trials."
+    },
+    {
+      "date": "2025-05-10",
+      "summary": "Secured cross-functional endorsement from Biostats and Clin Dev at steering-committee review."
+    }
+  ],
+  "deliverables": [
+    {
+      "id": "D1",
+      "description": "MVP software package and user guide",
+      "due": "2025-06-30",
+      "status": "In Progress",
+      "owner": "Data Science Lead",
+      "dependencies": []
+    },
+    {
+      "id": "D2",
+      "description": "Validation study report (three therapeutic areas)",
+      "due": "2025-09-15",
+      "status": "Planned",
+      "owner": "Clinical Innovation Team",
+      "dependencies": ["D1"]
+    },
+    {
+      "id": "D3",
+      "description": "Integration APIs for EDC / protocol-authoring tools",
+      "due": "2025-11-30",
+      "status": "Not Started",
+      "owner": "Platform Engineering",
+      "dependencies": ["D2"]
+    }
+  ],
+  "budget": {
+    "ytdForecast": 0.9,
+    "ytdActuals": 0.85,
+    "prevMonthForecast": 0.15,
+    "prevMonthActuals": 0.14
+  },
+  "keyMetrics": {
+    "resourceFTE": 5,
+    "milestoneVarianceDays": -2
+  },
+  "notes": ""
+}

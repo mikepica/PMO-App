@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { programs } from './data/index';
+import { Routes, Route, useParams, useNavigate, Navigate, useLocation } from 'react-router-dom';
+import { programs, getProgram, getAvailableMonths, getCurrentMonth, getProjectsForMonths } from './data/index';
 import { API_CONFIG, getModelConfig } from './config/api';
 import { loadSystemPrompt } from './config/systemPrompt';
 import ReactMarkdown from 'react-markdown';
 import ProjectTabs from './components/ProjectTabs';
 import ProjectDetailView from './components/ProjectDetailView';
+import AIContextSelector from './components/AIContextSelector';
 import Modal from './components/Modal';
 
 // Simple SVG icons for demonstration
@@ -20,8 +22,52 @@ const icons = {
   ),
 };
 
-function App() {
-  const [selectedTab, setSelectedTab] = useState(programs.projects[0]?.projectId || '');
+function ProjectView({ selectedMonth, onMonthChange }) {
+  const { projectId } = useParams();
+  const navigate = useNavigate();
+  const availableMonths = getAvailableMonths();
+  const selectedProject = getProgram(projectId, selectedMonth);
+  
+  // Redirect to first project if invalid projectId
+  useEffect(() => {
+    if (!selectedProject && programs.projects.length > 0) {
+      navigate(`/project/${programs.projects[0].projectId}`);
+    }
+  }, [selectedProject, navigate]);
+
+  if (!selectedProject) {
+    return null;
+  }
+
+  return (
+    <ProjectDetailView
+      project={selectedProject}
+      selectedMonth={selectedMonth}
+      availableMonths={availableMonths}
+      onMonthChange={onMonthChange}
+    />
+  );
+}
+
+function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: onMonthChangeFromApp }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const availableMonths = getAvailableMonths();
+  const currentMonth = getCurrentMonth();
+  
+  // Month-related state
+  const [selectedMonth, setSelectedMonth] = useState(initialSelectedMonth || currentMonth);
+  const [contextMonths, setContextMonths] = useState([initialSelectedMonth || currentMonth]);
+
+  // Sync with parent component
+  const handleMonthChange = (month) => {
+    setSelectedMonth(month);
+    if (onMonthChangeFromApp) {
+      onMonthChangeFromApp(month);
+    }
+  };
+  
+  // Original state
   const [contextProjects, setContextProjects] = useState(programs.projects.map(p => p.projectId));
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -34,6 +80,9 @@ function App() {
   const [modalTitle, setModalTitle] = useState('');
   const [systemPrompt, setSystemPrompt] = useState('');
 
+  // Extract current projectId from URL
+  const currentProjectId = location.pathname.split('/').pop();
+
   // Load system prompt on component mount
   useEffect(() => {
     loadSystemPrompt().then(prompt => {
@@ -42,7 +91,7 @@ function App() {
   }, []);
 
   const handleTabSelect = (projectId) => {
-    setSelectedTab(projectId);
+    navigate(`/project/${projectId}`);
   };
 
   const handleContextToggle = (projectId) => {
@@ -54,7 +103,7 @@ function App() {
   };
 
   const handleSendMessage = async () => {
-    if (!inputMessage.trim() || contextProjects.length === 0) return;
+    if (!inputMessage.trim() || contextProjects.length === 0 || contextMonths.length === 0) return;
 
     // Add user message to chat thread
     const userMessage = {
@@ -69,10 +118,17 @@ function App() {
     setIsLoading(true);
 
     try {
-      // Get context projects data
-      const contextData = contextProjects.map(projectId => 
-        programs.projects.find(p => p.projectId === projectId)
-      ).filter(Boolean);
+      // Get context projects data from selected months
+      const monthlyProjects = getProjectsForMonths(contextMonths);
+      const contextData = {};
+      
+      contextMonths.forEach(month => {
+        if (monthlyProjects[month]) {
+          contextData[month] = contextProjects.map(projectId => 
+            monthlyProjects[month].find(p => p.projectId === projectId)
+          ).filter(Boolean);
+        }
+      });
 
       // Build conversation messages including history
       const conversationMessages = [
@@ -123,9 +179,6 @@ function App() {
     }
   };
 
-
-  const selectedProject = programs.projects.find(p => p.projectId === selectedTab);
-
   return (
     <div className="flex flex-col h-screen bg-gray-100">
       {/* Header */}
@@ -149,7 +202,7 @@ function App() {
         <div className="px-4 md:px-8 pb-2 border-b border-gray-200 overflow-hidden">
           <ProjectTabs
             projects={programs.projects}
-            selectedTab={selectedTab}
+            selectedTab={currentProjectId}
             onTabSelect={handleTabSelect}
             contextProjects={contextProjects}
             onContextToggle={handleContextToggle}
@@ -161,7 +214,10 @@ function App() {
       <div className="flex flex-1 min-h-0">
         {/* Left side - Project Detail View */}
         <div className={`transition-all duration-300 ${showChat ? 'w-2/3' : 'w-full'} p-4 overflow-y-auto bg-gray-50`}>
-          <ProjectDetailView project={selectedProject} />
+          {React.cloneElement(children, { 
+            selectedMonth, 
+            onMonthChange: handleMonthChange 
+          })}
         </div>
 
         {/* Right side - Chat interface */}
@@ -169,9 +225,15 @@ function App() {
           <div className="w-1/3 bg-white p-4 flex flex-col h-full min-h-0 transition-all duration-300">
             <div className="mb-4">
               <h3 className="text-lg font-semibold text-gray-800 mb-2">AI Assistant</h3>
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-gray-600 mb-3">
                 Context: {contextProjects.length} projects selected
               </div>
+              <AIContextSelector
+                availableMonths={availableMonths}
+                selectedMonths={contextMonths}
+                onMonthsChange={setContextMonths}
+                currentMonth={currentMonth}
+              />
             </div>
             <div className="flex-1 min-h-0 overflow-y-auto">
               {messages.length === 0 && (
@@ -251,4 +313,19 @@ function App() {
   );
 }
 
-export default App; 
+function App() {
+  const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
+
+  return (
+    <Routes>
+      <Route path="/" element={<Navigate to={`/project/${programs.projects[0]?.projectId || 'PRJ-001'}`} replace />} />
+      <Route path="/project/:projectId" element={
+        <Layout selectedMonth={selectedMonth} onMonthChange={setSelectedMonth}>
+          <ProjectView selectedMonth={selectedMonth} onMonthChange={setSelectedMonth} />
+        </Layout>
+      } />
+    </Routes>
+  );
+}
+
+export default App;

@@ -1,0 +1,90 @@
+{
+  "projectId": "PRJ-002",
+  "name": "Digital Biomarker Capture Platform",
+  "purpose": "Enable at-home collection of continuous mobility and sleep data for neurology studies.",
+  "status": {
+    "overall": "On-track",
+    "phase": "Execution",
+    "percentComplete": 35
+  },
+  "timeline": {
+    "start": "2024-07-15",
+    "end": "2025-11-30"
+  },
+  "owner": {
+    "programManager": "Miles Chen",
+    "sponsor": "Translational Medicine Lead",
+    "steeringCommittee": ["Head of Neuroscience", "IT CTO"]
+  },
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Wearable battery life below 7 days affects adherence.",
+      "impact": 3,
+      "likelihood": 4,
+      "rating": 12,
+      "mitigation": "Evaluating multiple sensor vendors for battery optimization.",
+      "status": "Active"
+    },
+    {
+      "id": "R2",
+      "description": "Data privacy concerns around continuous geolocation tracking.",
+      "impact": 2,
+      "likelihood": 4,
+      "rating": 8,
+      "mitigation": "Working with legal team on privacy framework.",
+      "status": "Active"
+    }
+  ],
+  "achievements": [
+    {
+      "date": "2025-02-10",
+      "summary": "Completed first 50-patient usability test; 92% device uptime."
+    },
+    {
+      "date": "2025-03-28",
+      "summary": "Secured ethics approval for continuous sleep monitoring arm."
+    },
+    {
+      "date": "2025-04-30",
+      "summary": "Mobile app achieved 4.6★ rating in internal beta with 120 participants."
+    }
+  ],
+  "deliverables": [
+    {
+      "id": "D1",
+      "description": "Regulatory usability report",
+      "due": "2025-08-15",
+      "status": "Not Started",
+      "owner": "Human Factors SME",
+      "dependencies": ["D2"]
+    },
+    {
+      "id": "D2",
+      "description": "Firmware v2.0 with power-optimization patch",
+      "due": "2025-06-30",
+      "status": "In Progress",
+      "owner": "Device Engineering",
+      "dependencies": []
+    },
+    {
+      "id": "D3",
+      "description": "Data-ingestion pipeline validated in GxP cloud",
+      "due": "2025-09-30",
+      "status": "Planned",
+      "owner": "Data Engineering",
+      "dependencies": ["D2"]
+    }
+  ],
+  "budget": {
+    "ytdForecast": 1.6,
+    "ytdActuals": 1.55,
+    "prevMonthForecast": 0.20,
+    "prevMonthActuals": 0.19
+  },
+  "keyMetrics": {
+    "resourceFTE": 8,
+    "milestoneVarianceDays": 7
+  },
+  "notes": ""
+}

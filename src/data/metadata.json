@@ -1,4 +1,6 @@
 {
-  "schemaVersion": "1.0",
-  "lastUpdated": "2025-05-16"
+  "schemaVersion": "2.0",
+  "lastUpdated": "2025-07-31",
+  "availableMonths": ["2025-05", "2025-06", "2025-07"],
+  "currentMonth": "2025-07"
 }

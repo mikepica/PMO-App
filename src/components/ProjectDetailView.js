@@ -1,8 +1,9 @@
 import React from 'react';
 import StatusIndicators from './StatusIndicators';
 import ProjectTable from './ProjectTable';
+import MonthSelector from './MonthSelector';
 
-function ProjectDetailView({ project }) {
+function ProjectDetailView({ project, selectedMonth, availableMonths, onMonthChange }) {
   if (!project) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -53,8 +54,14 @@ function ProjectDetailView({ project }) {
               {project.purpose || project.projectGoal}
             </p>
           </div>
-          <div className="text-right text-sm text-gray-600">
-            <div className="font-semibold">Report For: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</div>
+          <div className="text-right">
+            {availableMonths && onMonthChange && (
+              <MonthSelector
+                availableMonths={availableMonths}
+                selectedMonth={selectedMonth}
+                onMonthChange={onMonthChange}
+              />
+            )}
           </div>
         </div>
 

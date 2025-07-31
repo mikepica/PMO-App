@@ -1,0 +1,199 @@
+{
+  "projectId": "MLDX",
+  "name": "Machine Learning Data Analytics",
+  "alternateName": "Digital Research Platform",
+  "projectGoal": "To enhance data processing capabilities through advanced machine learning algorithms and automation",
+
+  "status": [
+    {
+      "id": "S1",
+      "description": "Overall Status",
+      "ragStatus": "Amber",
+      "comments": null
+    },
+    {
+      "id": "S2",
+      "description": "Schedule",
+      "ragStatus": "Amber",
+      "comments": null
+    },
+    {
+      "id": "S3",
+      "description": "Scope",
+      "ragStatus": "Green",
+      "comments": null
+    },
+    {
+      "id": "S4",
+      "description": "Resources",
+      "ragStatus": "Amber",
+      "comments": null
+    },
+    {
+      "id": "S5",
+      "description": "Risk & Issues",
+      "ragStatus": "Red",
+      "comments": null
+    },
+    {
+      "id": "S6",
+      "description": "Spend",
+      "ragStatus": "Green",
+      "comments": null
+    },
+    {
+      "id": "S7",
+      "description": "Business Readiness",
+      "ragStatus": "Amber",
+      "comments": null
+    },
+    {
+      "id": "S8",
+      "description": "Benefits Realization",
+      "ragStatus": "Green",
+      "comments": null
+    }  
+  ],
+  
+  "timeline": {
+    "start": "2023-03-15",
+    "end": "2026-08-30"
+  },
+
+  "owner": {
+    "programlead": "Sarah Johnson",
+    "sponsor": "Michael Chen",
+    "businessLeads": ["David Martinez", "Lisa Thompson", "James Wilson"]
+  },
+
+  
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Legacy data processing servers are approaching capacity limits and may cause system bottlenecks",
+      "impact": 4,
+      "likelihood": 2,
+      "rating": 8,
+      "mitigation": "Cloud migration assessment completed; infrastructure upgrade proposal finalized. IT team preparing migration plan for execution by Q3's end to implement new cloud platform. Vendor to provide cost estimates and migration timeline, requiring additional project management support.",
+      "status": "Active",
+      "owner": "Lisa Thompson",
+      "escalationAction": "Budget reallocation required; Approve cloud infrastructure migration proposal with AWS",
+      "workstream": "Infrastructure & Platform"
+    },
+    {
+      "id": "R2",
+      "description": "Current system lacks real-time monitoring capabilities and user feedback mechanisms for quality assurance metrics.",
+      "impact": 2,
+      "likelihood": 4,
+      "rating": 8,
+      "mitigation": "DevOps, Analytics Team and Business Intelligence to develop monitoring implementation roadmap.",
+      "status": "Active",
+      "owner": "Alex Rodriguez, Lisa Thompson",
+      "escalationAction": null,
+      "workstream": "Analytics Platform"
+    }
+  ],
+
+"achievements": [
+  {
+    "date": "2025-04-30",
+    "workstream": "Data Integration",
+    "summary": "Customer behavior data migration to Azure Data Lake initiated"
+  },
+  {
+    "date": "2025-04-30",
+    "workstream": "Data Integration",
+    "summary": "API documentation standardization completed"
+  },
+  {
+    "date": "2025-05-15",
+    "workstream": "Algorithm Development",
+    "summary": "Machine learning framework evaluation completed, TensorFlow selected"
+  },
+  {
+    "date": "2025-05-20",
+    "workstream": "Platform Application",
+    "summary": "Digital Analytics Dashboard POC demonstrated to stakeholders"
+  },
+  {
+    "date": "2025-05-25",
+    "workstream": "Platform Application",
+    "summary": "Initial customer segmentation models developed and tested"
+  },
+  {
+    "date": "2025-06-10",
+    "workstream": "Data Integration",
+    "summary": "50% of customer behavior data migrated to Azure Data Lake"
+  },
+  {
+    "date": "2025-06-15",
+    "workstream": "Algorithm Development",
+    "summary": "Collaborative Analytics Intelligence Network (CAIN) partnership established"
+  },
+  {
+    "date": "2025-06-20",
+    "workstream": "Platform Application",
+    "summary": "Business Intelligence Suite (BISuite) deployment initiated"
+  },
+  {
+    "date": "2025-06-25",
+    "workstream": "Platform Application",
+    "summary": "DataFlow integrated for customer segmentation analysis"
+  }
+],
+  
+  "scorecardDeliverables": [
+    {
+      "id": "D1",
+      "description": "Digital analytics tools deployed across business units, driving reduction in processing times (5 hrs) & increasing data accuracy (95%+)",
+      "businessValue": "Digital Analytics Platform and automated optimization will accelerate decision-making from Data Collection to Business Insights by 40% (8+ week acceleration leveraging AI and automation). GenAI will accelerate reporting delivery by 2 to 4 weeks and enable analysis of previously complex data patterns and relationships.",
+      "due": "Q3 2025",
+      "ragStatus": "Amber",
+      "percentComplete": 65,
+      "comments": "Solid progress: 19/35 business units where Digital Analytics deployed, 3/7 units leveraging automated optimization; 1/3 GenAI applications (Customer Experience) automated workflow initiated. Resource constraints being addressed with new hires. Q3 focus: complete Azure migration, deploy Real-time Analytics Engine, establish KPIs."
+    }
+  ],
+
+"keyNextSteps": [
+  {
+    "workstream": "Data Integration",
+    "description": "Complete customer behavior data migration to Azure Data Lake"
+  },
+  {
+    "workstream": "Data Integration",
+    "description": "Begin customer survey data extraction from Business Intelligence Platform (BIP)"
+  },
+  {
+    "workstream": "Algorithm Development",
+    "description": "Start TensorFlow and PyTorch performance testing for recommendation engine"
+  },
+  {
+    "workstream": "Algorithm Development",
+    "description": "Develop internal feature engineering pipeline"
+  },
+  {
+    "workstream": "Platform Application",
+    "description": "Complete BISuite deployment and begin RAE development"
+  },
+  {
+    "workstream": "Platform Application",
+    "description": "Initiate pilot predictive maintenance project SENSOR42"
+  },
+  {
+    "workstream": "Project Management",
+    "description": "Onboard 3 new analysts and complete training"
+  }
+],
+
+  "budget": {
+    "ytdForecast": null,
+    "ytdActuals": null,
+    "prevMonthForecast": null,
+    "prevMonthActuals": null
+  },
+
+  "keyMetrics": {
+    "resourceFTE": null,
+    "milestoneVarianceDays": null
+  }
+}

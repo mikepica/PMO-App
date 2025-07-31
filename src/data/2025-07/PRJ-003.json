@@ -1,0 +1,99 @@
+{
+  "projectId": "PRJ-003",
+  "name": "Automated Source-Data Verification (SDV)",
+  "purpose": "Use NLP to compare EHR-export PDFs against EDC entries, cutting CRA effort by 50 %.",
+  "status": {
+    "overall": "On-track",
+    "phase": "Planning",
+    "percentComplete": 18
+  },
+  "timeline": {
+    "start": "2025-02-01",
+    "end": "2026-03-31"
+  },
+  "owner": {
+    "programManager": "Priya Patel",
+    "sponsor": "VP Site Monitoring",
+    "steeringCommittee": ["QA Director"]
+  },
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Site EHR export formats highly variable.",
+      "impact": 4,
+      "likelihood": 2,
+      "rating": 8,
+      "mitigation": "Develop format-agnostic OCR layer; recruit 3 pilot sites for testing.",
+      "status": "Active"
+    },
+    {
+      "id": "R2",
+      "description": "Limited GPU capacity in on-prem cluster may slow model inference.",
+      "impact": 3,
+      "likelihood": 3,
+      "rating": 9,
+      "mitigation": "Migrate inference to cloud burst; reserve compute credits ahead.",
+      "status": "Watch"
+    },
+    {
+      "id": "R3",
+      "description": "Change-management resistance from CRAs unwilling to trust automated SDV.",
+      "impact": 3,
+      "likelihood": 3,
+      "rating": 9,
+      "mitigation": "Run side-by-side validation; provide training & incentives.",
+      "status": "Active"
+    }
+  ],
+  "achievements": [
+    {
+      "date": "2025-03-12",
+      "summary": "Completed user-journey workshops with 18 CRAs across three regions."
+    },
+    {
+      "date": "2025-04-25",
+      "summary": "Mapped 14 common EHR layouts covering 65 % of pilot sites."
+    },
+    {
+      "date": "2025-05-14",
+      "summary": "Drafted detailed functional-requirements specification (90 % complete)."
+    }
+  ],
+  "deliverables": [
+    {
+      "id": "D1",
+      "description": "Functional requirements spec",
+      "due": "2025-05-31",
+      "status": "In Progress",
+      "owner": "Business Analyst",
+      "dependencies": []
+    },
+    {
+      "id": "D2",
+      "description": "Prototype OCR + NLP micro-service",
+      "due": "2025-09-15",
+      "status": "Planned",
+      "owner": "ML Engineering",
+      "dependencies": ["D1"]
+    },
+    {
+      "id": "D3",
+      "description": "Pilot study with 5 investigative sites",
+      "due": "2025-12-31",
+      "status": "Not Started",
+      "owner": "Site Monitoring",
+      "dependencies": ["D2"]
+    }
+  ],
+  "budget": {
+    "ytdForecast": 0.55,
+    "ytdActuals": 0.47,
+    "prevMonthForecast": 0.06,
+    "prevMonthActuals": 0.05
+  },
+  "keyMetrics": {
+    "resourceFTE": 3,
+    "milestoneVarianceDays": -2
+  },
+  "notes": ""
+}

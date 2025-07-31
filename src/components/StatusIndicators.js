@@ -4,28 +4,14 @@ function StatusIndicators({ status }) {
   const getStatusColor = (ragStatus) => {
     switch (ragStatus?.toLowerCase()) {
       case 'green':
-        return 'bg-green-500';
+        return 'bg-green-600';
       case 'amber':
       case 'yellow':
-        return 'bg-yellow-500';
+        return 'bg-amber-600';
       case 'red':
-        return 'bg-red-500';
+        return 'bg-red-600';
       default:
-        return 'bg-gray-400';
-    }
-  };
-
-  const getStatusTextColor = (ragStatus) => {
-    switch (ragStatus?.toLowerCase()) {
-      case 'green':
-        return 'text-green-800';
-      case 'amber':
-      case 'yellow':
-        return 'text-yellow-800';
-      case 'red':
-        return 'text-red-800';
-      default:
-        return 'text-gray-800';
+        return 'bg-gray-500';
     }
   };
 
@@ -43,18 +29,13 @@ function StatusIndicators({ status }) {
       ].filter(item => item.ragStatus);
 
   return (
-    <div className="flex flex-wrap gap-4 mb-4">
+    <div className="flex justify-between items-center mb-4 w-full">
       {statusItems.map((item, index) => (
-        <div key={index} className="flex items-center space-x-2">
-          <span className="text-sm font-medium text-gray-700">
-            {item.description}:
-          </span>
-          <div className="flex items-center space-x-1">
-            <div className={`w-3 h-3 rounded-full ${getStatusColor(item.ragStatus)}`}></div>
-            <span className={`text-sm font-semibold ${getStatusTextColor(item.ragStatus)}`}>
-              {item.ragStatus?.charAt(0).toUpperCase() + item.ragStatus?.slice(1)}
-            </span>
-          </div>
+        <div
+          key={index}
+          className={`flex-1 mx-1 px-3 py-2 rounded-full text-white font-semibold text-lg text-center ${getStatusColor(item.ragStatus)}`}
+        >
+          {item.description}
         </div>
       ))}
     </div>

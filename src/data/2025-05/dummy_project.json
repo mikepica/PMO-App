@@ -1,0 +1,171 @@
+{
+  "projectId": "MLDX",
+  "name": "Machine Learning Data Analytics",
+  "alternateName": "Digital Research Platform",
+  "projectGoal": "To enhance data processing capabilities through advanced machine learning algorithms and automation",
+
+  "status": [
+    {
+      "id": "S1",
+      "description": "Overall Status",
+      "ragStatus": "Green",
+      "comments": null
+    },
+    {
+      "id": "S2",
+      "description": "Schedule",
+      "ragStatus": "Amber",
+      "comments": null
+    },
+    {
+      "id": "S3",
+      "description": "Scope",
+      "ragStatus": "Green",
+      "comments": null
+    },
+    {
+      "id": "S4",
+      "description": "Resources",
+      "ragStatus": "Green",
+      "comments": null
+    },
+    {
+      "id": "S5",
+      "description": "Risk & Issues",
+      "ragStatus": "Amber",
+      "comments": null
+    },
+    {
+      "id": "S6",
+      "description": "Spend",
+      "ragStatus": "Green",
+      "comments": null
+    },
+    {
+      "id": "S7",
+      "description": "Business Readiness",
+      "ragStatus": "Green",
+      "comments": null
+    },
+    {
+      "id": "S8",
+      "description": "Benefits Realization",
+      "ragStatus": "Amber",
+      "comments": null
+    }  
+  ],
+  
+  "timeline": {
+    "start": "2023-03-15",
+    "end": "2026-08-30"
+  },
+
+  "owner": {
+    "programlead": "Sarah Johnson",
+    "sponsor": "Michael Chen",
+    "businessLeads": ["David Martinez", "Lisa Thompson", "James Wilson"]
+  },
+
+  
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Legacy data processing servers are approaching capacity limits and may cause system bottlenecks",
+      "impact": 4,
+      "likelihood": 3,
+      "rating": 12,
+      "mitigation": "Cloud migration assessment initiated; evaluating AWS and Azure options.",
+      "status": "Active",
+      "owner": "Lisa Thompson",
+      "escalationAction": null,
+      "workstream": "Infrastructure & Platform"
+    },
+    {
+      "id": "R2",
+      "description": "Current system lacks real-time monitoring capabilities and user feedback mechanisms for quality assurance metrics.",
+      "impact": 2,
+      "likelihood": 4,
+      "rating": 8,
+      "mitigation": "DevOps, Analytics Team and Business Intelligence to develop monitoring implementation roadmap.",
+      "status": "Active",
+      "owner": "Alex Rodriguez, Lisa Thompson",
+      "escalationAction": null,
+      "workstream": "Analytics Platform"
+    }
+  ],
+
+"achievements": [
+  {
+    "date": "2025-04-30",
+    "workstream": "Data Integration",
+    "summary": "Customer behavior data migration to Azure Data Lake initiated"
+  },
+  {
+    "date": "2025-04-30",
+    "workstream": "Data Integration",
+    "summary": "API documentation standardization completed"
+  },
+  {
+    "date": "2025-05-15",
+    "workstream": "Algorithm Development",
+    "summary": "Machine learning framework evaluation completed, TensorFlow selected"
+  },
+  {
+    "date": "2025-05-20",
+    "workstream": "Platform Application",
+    "summary": "Digital Analytics Dashboard POC demonstrated to stakeholders"
+  },
+  {
+    "date": "2025-05-25",
+    "workstream": "Platform Application",
+    "summary": "Initial customer segmentation models developed and tested"
+  }
+],
+  
+  "scorecardDeliverables": [
+    {
+      "id": "D1",
+      "description": "Digital analytics tools deployed across business units, driving reduction in processing times (5 hrs) & increasing data accuracy (95%+)",
+      "businessValue": "Digital Analytics Platform and automated optimization will accelerate decision-making from Data Collection to Business Insights by 40% (8+ week acceleration leveraging AI and automation). GenAI will accelerate reporting delivery by 2 to 4 weeks and enable analysis of previously complex data patterns and relationships.",
+      "due": "Q3 2025",
+      "ragStatus": "Green",
+      "percentComplete": 55,
+      "comments": "Good progress: 15/35 business units where Digital Analytics deployed, 2/7 units leveraging automated optimization. Infrastructure foundation established. Q2 focus: expand deployment to additional business units, complete Azure Data Lake migration, initiate real-time analytics development."
+    }
+  ],
+
+"keyNextSteps": [
+  {
+    "workstream": "Data Integration",
+    "description": "Complete initial data migration to Azure Data Lake"
+  },
+  {
+    "workstream": "Data Integration",
+    "description": "Define data governance framework and policies"
+  },
+  {
+    "workstream": "Algorithm Development",
+    "description": "Begin development of recommendation engine using TensorFlow"
+  },
+  {
+    "workstream": "Platform Application",
+    "description": "Expand Digital Analytics Dashboard to include predictive capabilities"
+  },
+  {
+    "workstream": "Project Management",
+    "description": "Recruit additional data scientists and ML engineers"
+  }
+],
+
+  "budget": {
+    "ytdForecast": null,
+    "ytdActuals": null,
+    "prevMonthForecast": null,
+    "prevMonthActuals": null
+  },
+
+  "keyMetrics": {
+    "resourceFTE": null,
+    "milestoneVarianceDays": null
+  }
+}
