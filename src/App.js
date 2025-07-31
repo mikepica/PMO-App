@@ -314,12 +314,28 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
     <div className="flex flex-col h-screen bg-gray-100">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
-        <div className="flex items-center justify-between px-8 py-4">
-          <div className="flex items-center space-x-4">
+        <div className="flex items-center justify-between px-8 py-4 gap-6">
+          {/* Left: Logo and Title */}
+          <div className="flex items-center space-x-4 flex-shrink-0">
             <img src="/ndp-logo.png" alt="NDP Logo" className="h-14 w-auto mr-3" />
-            <h1 className="text-2xl font-bold text-gray-800">Non-Drug Portfolio Dashboard</h1>
+            <h1 className="text-2xl font-bold text-gray-800">NDP Dashboard</h1>
           </div>
-          <div className="flex space-x-6">
+          
+          {/* Center: Project Navigation */}
+          <div className="flex-1 flex justify-center min-w-0 overflow-hidden">
+            <div className="max-w-4xl w-full overflow-x-auto px-2">
+              <ProjectTabs
+                projects={programs.projects}
+                selectedTab={currentProjectId}
+                onTabSelect={handleTabSelect}
+                contextProjects={contextProjects}
+                onContextToggle={handleContextToggle}
+              />
+            </div>
+          </div>
+          
+          {/* Right: AI Chat Button */}
+          <div className="flex space-x-6 flex-shrink-0">
             <button
               className={`flex flex-col items-center focus:outline-none ${showChat ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'}`}
               onClick={() => setShowChat((v) => !v)}
@@ -328,16 +344,6 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
               <span className="text-xs mt-1">AI Chat</span>
             </button>
           </div>
-        </div>
-        {/* Project Tabs */}
-        <div className="px-4 md:px-8 pb-2 border-b border-gray-200 overflow-hidden">
-          <ProjectTabs
-            projects={programs.projects}
-            selectedTab={currentProjectId}
-            onTabSelect={handleTabSelect}
-            contextProjects={contextProjects}
-            onContextToggle={handleContextToggle}
-          />
         </div>
       </header>
 

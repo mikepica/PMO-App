@@ -2,14 +2,14 @@ import React from 'react';
 
 function ProjectTabs({ projects, selectedTab, onTabSelect, contextProjects, onContextToggle }) {
   return (
-    <div className="flex flex-wrap gap-2 items-end">
+    <div className="flex flex-nowrap gap-2 items-center justify-center min-w-max">
       {projects.map((project) => (
         <div
           key={project.projectId}
-          className={`flex items-center space-x-2 px-3 py-2 rounded-t-lg border-b-2 cursor-pointer transition-colors min-w-0 max-w-xs ${
+          className={`flex items-center space-x-2 px-3 py-1.5 rounded-full cursor-pointer transition-all duration-200 min-w-0 max-w-48 ${
             selectedTab === project.projectId
-              ? 'bg-white border-blue-500 text-blue-600'
-              : 'bg-gray-50 border-transparent text-gray-600 hover:bg-gray-100'
+              ? 'bg-blue-100 border-2 border-blue-500 text-blue-700 shadow-sm'
+              : 'bg-gray-100 border-2 border-transparent text-gray-700 hover:bg-gray-200 hover:border-gray-300'
           }`}
           onClick={() => onTabSelect(project.projectId)}
         >
@@ -20,9 +20,10 @@ function ProjectTabs({ projects, selectedTab, onTabSelect, contextProjects, onCo
               e.stopPropagation();
               onContextToggle(project.projectId);
             }}
-            className="form-checkbox h-4 w-4 text-blue-500 rounded flex-shrink-0"
+            className="form-checkbox h-3.5 w-3.5 text-blue-500 rounded flex-shrink-0"
+            title="Include in AI context"
           />
-          <span className="text-sm font-medium break-words leading-tight min-w-0">
+          <span className="text-xs font-medium truncate leading-tight min-w-0">
             {project.name}
           </span>
         </div>
