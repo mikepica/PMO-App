@@ -1,10 +1,11 @@
 export const API_CONFIG = {
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
   models: {
-    'gpt-4.1-mini': 'gpt-4.1-mini',
-    'gpt-4.1': 'gpt-4.1',
-    'gpt-4.1-nano': 'gpt-4.1-nano',
-    'extended-thinking': 'gpt-4.1', // You can change this to any model on your backend
+    'gpt-4.1-mini': { model: 'gpt-4.1-mini', temperature: 0.7 },
+    'gpt-4.1': { model: 'gpt-4.1', temperature: 0.7 },
+    'gpt-4.1-nano': { model: 'gpt-4.1-nano', temperature: 0.7 },
+    'gpt-4': { model: 'gpt-4.1', temperature: 0.4 }, // Current hardcoded model from App.js
+    'extended-thinking': { model: 'gpt-4.1', temperature: 0.1 }, // Lower temp for more focused thinking
   },
   defaultModel: 'gpt-4.1-nano',
   defaultTemperature: 0.7,
@@ -12,11 +13,22 @@ export const API_CONFIG = {
 };
 
 // Get model configuration
-export const getModelConfig = (modelKey = 'gpt-4.1-nano', temperature = 0.7) => {
+export const getModelConfig = (modelKey = 'gpt-4.1-nano') => {
+  const modelConfig = API_CONFIG.models[modelKey];
+  if (!modelConfig) {
+    // Fallback to default model
+    const defaultModelConfig = API_CONFIG.models[API_CONFIG.defaultModel];
+    return {
+      ...API_CONFIG,
+      model: defaultModelConfig.model,
+      temperature: defaultModelConfig.temperature
+    };
+  }
+  
   return {
     ...API_CONFIG,
-    model: API_CONFIG.models[modelKey] || API_CONFIG.defaultModel,
-    temperature: temperature
+    model: modelConfig.model,
+    temperature: modelConfig.temperature
   };
 };
 

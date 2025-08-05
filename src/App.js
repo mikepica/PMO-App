@@ -277,8 +277,8 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
           'X-Title': 'Program Management Assistant'
         },
         body: JSON.stringify({
-          model: getModelConfig(extendedThinking ? 'extended-thinking' : 'gpt-4', 0.4).model,
-          temperature: getModelConfig(extendedThinking ? 'extended-thinking' : 'gpt-4', 0.4).temperature,
+          model: getModelConfig(extendedThinking ? 'extended-thinking' : 'gpt-4').model,
+          temperature: getModelConfig(extendedThinking ? 'extended-thinking' : 'gpt-4').temperature,
           messages: conversationMessages
         })
       });
