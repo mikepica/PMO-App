@@ -4,6 +4,7 @@ export const API_CONFIG = {
     'gpt-4.1-mini': 'gpt-4.1-mini',
     'gpt-4.1': 'gpt-4.1',
     'gpt-4.1-nano': 'gpt-4.1-nano',
+    'extended-thinking': 'gpt-4.1', // You can change this to any model on your backend
   },
   defaultModel: 'gpt-4.1-nano',
   defaultTemperature: 0.7,

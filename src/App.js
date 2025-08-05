@@ -81,6 +81,7 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showChat, setShowChat] = useState(true);
+  const [extendedThinking, setExtendedThinking] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [modalContent, setModalContent] = useState('');
@@ -276,8 +277,8 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
           'X-Title': 'Program Management Assistant'
         },
         body: JSON.stringify({
-          model: getModelConfig('gpt-4', 0.4).model,
-          temperature: getModelConfig('gpt-4', 0.4).temperature,
+          model: getModelConfig(extendedThinking ? 'extended-thinking' : 'gpt-4', 0.4).model,
+          temperature: getModelConfig(extendedThinking ? 'extended-thinking' : 'gpt-4', 0.4).temperature,
           messages: conversationMessages
         })
       });
@@ -416,6 +417,22 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
               )}
             </div>
             <div className="border-t pt-4">
+              <div className="flex items-center justify-between mb-3">
+                <button
+                  onClick={() => setExtendedThinking(!extendedThinking)}
+                  className={`inline-flex items-center px-3 py-1 text-sm font-medium rounded-md transition-colors ${
+                    extendedThinking
+                      ? 'bg-purple-100 text-purple-800 border border-purple-200'
+                      : 'bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200'
+                  }`}
+                >
+                  <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                  Extended Thinking
+                  {extendedThinking && <span className="ml-1 text-xs">ON</span>}
+                </button>
+              </div>
               <div className="flex space-x-2">
                 <input
                   type="text"
