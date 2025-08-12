@@ -113,7 +113,7 @@ function ProjectDetailView({ project, selectedMonth, availableMonths, onMonthCha
               <li key={index} className="flex items-start space-x-2">
                 <span className="text-blue-500 mt-1">•</span>
                 <span className="text-gray-700">
-                  {achievement.summary || achievement}
+                  {typeof achievement === 'string' ? achievement : achievement.summary || achievement.description || 'Achievement item'}
                   {achievement.workstream && (
                     <span className="text-gray-500 text-sm ml-2">
                       ({achievement.workstream})
@@ -135,7 +135,7 @@ function ProjectDetailView({ project, selectedMonth, availableMonths, onMonthCha
               <li key={index} className="flex items-start space-x-2">
                 <span className="text-blue-500 mt-1">•</span>
                 <span className="text-gray-700">
-                  {step.description || step}
+                  {typeof step === 'string' ? step : step.description || step.summary || 'Priority item'}
                   {step.workstream && (
                     <span className="text-gray-500 text-sm ml-2">
                       ({step.workstream})

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useParams, useNavigate, Navigate, useLocation } from 'react-router-dom';
-import { programs, getProgram, getAvailableMonths, getCurrentMonth, getProjectsForMonths } from './data/index';
+import { programs, getProgram, getProjects, getAvailableMonths, getCurrentMonth, getProjectsForMonths } from './data/index';
 import { API_CONFIG, getModelConfig } from './config/api';
 import { loadSystemPrompt } from './config/systemPrompt';
 import ReactMarkdown from 'react-markdown';
@@ -332,7 +332,7 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
           <div className="flex-1 flex justify-center min-w-0 overflow-hidden">
             <div className="max-w-4xl w-full overflow-x-auto px-2">
               <ProjectTabs
-                projects={programs.projects}
+                projects={getProjects(selectedMonth)}
                 selectedTab={currentProjectId}
                 onTabSelect={handleTabSelect}
                 contextProjects={contextProjects}
