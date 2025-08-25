@@ -77,7 +77,27 @@ function ProjectDetailView({ project, selectedMonth, availableMonths, onMonthCha
           </div>
           <div>
             <span className="font-semibold">Project Manager: </span>
-            {project.owner?.programlead || project.owner?.programManager || 'Not specified'}
+            {(() => {
+              const programManager = project.owner?.programlead || project.owner?.programManager;
+              if (!programManager) {
+                return 'Not specified';
+              }
+              if (typeof programManager === 'string') {
+                return programManager;
+              }
+              if (programManager.name && programManager.email) {
+                return (
+                  <a 
+                    href={`mailto:${programManager.email}`}
+                    className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer"
+                    title={`Send email to ${programManager.name}`}
+                  >
+                    {programManager.name}
+                  </a>
+                );
+              }
+              return programManager.name || 'Not specified';
+            })()}
           </div>
         </div>
 

@@ -12,7 +12,10 @@
     "end": "2026-03-31"
   },
   "owner": {
-    "programManager": "Priya Patel",
+    "programManager": {
+      "name": "Priya Patel",
+      "email": "priya.patel@company.com"
+    },
     "sponsor": "VP Site Monitoring",
     "steeringCommittee": ["QA Director"]
   },

@@ -61,7 +61,10 @@
   },
 
   "owner": {
-    "programlead": "Sarah Johnson",
+    "programlead": {
+      "name": "Sarah Johnson",
+      "email": "sarah.johnson@company.com"
+    },
     "sponsor": "Michael Chen",
     "businessLeads": ["David Martinez", "Lisa Thompson", "James Wilson"]
   },

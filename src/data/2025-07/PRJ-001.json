@@ -12,7 +12,10 @@
     "end": "2025-12-31"
   },
   "owner": {
-    "programManager": "Elena Ruiz",
+    "programManager": {
+      "name": "Elena Ruiz",
+      "email": "elena.ruiz@company.com"
+    },
     "sponsor": "Head of Clinical Ops",
     "steeringCommittee": ["CDO", "VP Biometrics"]
   },

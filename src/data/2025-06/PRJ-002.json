@@ -12,7 +12,10 @@
     "end": "2025-11-30"
   },
   "owner": {
-    "programManager": "Miles Chen",
+    "programManager": {
+      "name": "Miles Chen",
+      "email": "miles.chen@company.com"
+    },
     "sponsor": "Translational Medicine Lead",
     "steeringCommittee": ["Head of Neuroscience", "IT CTO"]
   },
