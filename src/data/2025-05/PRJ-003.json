@@ -70,14 +70,14 @@
     {
       "id": "I1",
       "description": "OCR accuracy below acceptable thresholds for handwritten clinical notes",
-      "score": 12,
+      "rating": 12,
       "mitigation": "Advanced ML model training with additional handwriting datasets and expert validation",
       "escalation": "pending escalation"
     },
     {
       "id": "I2",
       "description": "Integration challenges with multiple EHR vendor APIs causing data extraction delays",
-      "score": 8,
+      "rating": 8,
       "mitigation": "Dedicated API development team and vendor liaison meetings scheduled weekly",
       "escalation": "pending escalation"
     }

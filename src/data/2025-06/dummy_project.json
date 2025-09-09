@@ -103,14 +103,14 @@
   {
     "id": "I1",
     "description": "Budget overruns in cloud migration phase requiring additional executive approval",
-    "score": 11,
+    "rating": 11,
     "mitigation": "Cost optimization review and phased migration approach to control expenses",
     "escalation": "pending escalation"
   },
   {
     "id": "I2",
     "description": "Vendor dependency risks affecting project timeline and deliverable quality",
-    "score": 8,
+    "rating": 8,
     "mitigation": "Diversified vendor strategy and in-house capability development program initiated",
     "escalation": "pending escalation"
   }

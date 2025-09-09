@@ -103,14 +103,14 @@
   {
     "id": "I1",
     "description": "Team resource constraints affecting development velocity and deliverable timelines",
-    "score": 7,
+    "rating": 7,
     "mitigation": "Cross-training initiatives and contractor augmentation to address skill gaps",
     "escalation": "pending escalation"
   },
   {
     "id": "I2",
     "description": "Integration testing environment instability causing deployment delays",
-    "score": 9,
+    "rating": 9,
     "mitigation": "Infrastructure team implementing redundant testing environments and automated recovery processes",
     "escalation": "pending escalation"
   }

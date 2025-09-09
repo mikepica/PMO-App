@@ -57,14 +57,14 @@
     {
       "id": "I1",
       "description": "Device compatibility issues with certain smartphone models affecting data sync",
-      "score": 10,
+      "rating": 10,
       "mitigation": "Hardware team developing universal adapter and updated firmware",
       "escalation": "pending escalation"
     },
     {
       "id": "I2",
       "description": "Participant dropout rate higher than expected in pilot studies",
-      "score": 8,
+      "rating": 8,
       "mitigation": "Enhanced participant engagement protocol and incentive program rollout",
       "escalation": "pending escalation"
     }

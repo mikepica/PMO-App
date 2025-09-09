@@ -60,14 +60,14 @@
     {
       "id": "I1",
       "description": "Delayed regulatory feedback affecting development timeline",
-      "score": 8,
+      "rating": 8,
       "mitigation": "Scheduled follow-up meetings with regulatory team and external consultants",
       "escalation": "pending escalation"
     },
     {
       "id": "I2", 
       "description": "Resource allocation conflicts between simulation and validation teams",
-      "score": 6,
+      "rating": 6,
       "mitigation": "Implementing resource sharing protocol and priority matrix",
       "escalation": "pending escalation"
     }

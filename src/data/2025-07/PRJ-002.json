@@ -70,14 +70,14 @@
     {
       "id": "I1",
       "description": "Data storage costs exceeding budget due to high-resolution sensor data volumes",
-      "score": 9,
+      "rating": 9,
       "mitigation": "Implementing data compression algorithms and tiered storage strategy",
       "escalation": "pending escalation"
     },
     {
       "id": "I2",
       "description": "Patient reporting system crashes during peak usage periods",
-      "score": 7,
+      "rating": 7,
       "mitigation": "Infrastructure scaling and load balancing optimization in progress",
       "escalation": "pending escalation"
     }

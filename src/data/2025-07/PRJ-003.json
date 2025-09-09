@@ -70,14 +70,14 @@
     {
       "id": "I1",
       "description": "AI model producing false positives requiring excessive manual review overhead",
-      "score": 10,
+      "rating": 10,
       "mitigation": "Model retraining with expanded negative examples and precision-focused optimization",
       "escalation": "pending escalation"
     },
     {
       "id": "I2",
       "description": "Compliance audit requirements exceed initial scope adding development complexity",
-      "score": 8,
+      "rating": 8,
       "mitigation": "Regulatory affairs team expanding compliance framework and documentation protocols",
       "escalation": "pending escalation"
     }

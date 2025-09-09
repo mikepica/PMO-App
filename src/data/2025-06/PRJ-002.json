@@ -70,14 +70,14 @@
     {
       "id": "I1",
       "description": "Clinical site onboarding delays due to IT infrastructure requirements",
-      "score": 6,
+      "rating": 6,
       "mitigation": "Simplified deployment package and dedicated technical support team assigned",
       "escalation": "pending escalation"
     },
     {
       "id": "I2",
       "description": "Regulatory submission documentation incomplete for EU markets",
-      "score": 11,
+      "rating": 11,
       "mitigation": "External regulatory consultants engaged and documentation review accelerated",
       "escalation": "pending escalation"
     }

@@ -70,14 +70,14 @@
     {
       "id": "I1",
       "description": "Integration testing delays with legacy EDC systems",
-      "score": 7,
+      "rating": 7,
       "mitigation": "Dedicated testing environment setup and additional QA resources allocated",
       "escalation": "pending escalation"
     },
     {
       "id": "I2",
       "description": "Performance bottlenecks in high-volume simulation scenarios",
-      "score": 9,
+      "rating": 9,
       "mitigation": "Cloud infrastructure scaling and algorithm optimization in progress",
       "escalation": "pending escalation"
     }

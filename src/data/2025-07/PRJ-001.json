@@ -70,14 +70,14 @@
     {
       "id": "I1",
       "description": "User adoption resistance from clinical teams due to workflow changes",
-      "score": 5,
+      "rating": 5,
       "mitigation": "Enhanced training program and change management support implemented",
       "escalation": "pending escalation"
     },
     {
       "id": "I2",
       "description": "Data privacy audit findings requiring architecture modifications",
-      "score": 12,
+      "rating": 12,
       "mitigation": "Security team working on compliance updates and data anonymization enhancements",
       "escalation": "pending escalation"
     }

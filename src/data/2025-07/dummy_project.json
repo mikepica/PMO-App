@@ -103,14 +103,14 @@
   {
     "id": "I1",
     "description": "Stakeholder alignment challenges causing scope creep and requirement changes",
-    "score": 6,
+    "rating": 6,
     "mitigation": "Weekly stakeholder alignment meetings and formal change control process implementation",
     "escalation": "pending escalation"
   },
   {
     "id": "I2",
     "description": "Performance benchmarking results below target specifications affecting user experience",
-    "score": 10,
+    "rating": 10,
     "mitigation": "Performance optimization team formed with dedicated architecture review and system tuning",
     "escalation": "pending escalation"
   }

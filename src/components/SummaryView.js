@@ -1,9 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { getProjects, getAvailableMonths } from '../data/index';
 
 function SummaryView({ selectedMonth }) {
   // Hover state for tooltip
   const [hoveredCell, setHoveredCell] = useState(null);
+  const [tooltipDimensions, setTooltipDimensions] = useState({ width: 0, height: 0 });
+  const tooltipRef = useRef(null);
+
+  // Measure tooltip dimensions when it's rendered
+  useEffect(() => {
+    if (hoveredCell && tooltipRef.current) {
+      const rect = tooltipRef.current.getBoundingClientRect();
+      setTooltipDimensions({ width: rect.width, height: rect.height });
+    }
+  }, [hoveredCell]);
+
   // Get the overall RAG status for a project
   const getOverallStatus = (project) => {
     if (Array.isArray(project.status)) {
@@ -101,7 +112,7 @@ function SummaryView({ selectedMonth }) {
     if (!project.issues || !Array.isArray(project.issues)) {
       return 0;
     }
-    return project.issues.filter(issue => issue.score >= 6).length;
+    return project.issues.filter(issue => issue.rating >= 6).length;
   };
 
   // Check if a project has any high issues across all months
@@ -136,12 +147,67 @@ function SummaryView({ selectedMonth }) {
     if (!project || !project.issues || !Array.isArray(project.issues)) {
       return [];
     }
-    return project.issues.filter(issue => issue.score >= 6);
+    return project.issues.filter(issue => issue.rating >= 6);
   };
 
   // Handle mouse events for tooltip
   const handleCellMouseEnter = (projectId, month, event, type = 'risk') => {
-    setHoveredCell({ projectId, month, x: event.clientX, y: event.clientY, type });
+    const targetRect = event.currentTarget.getBoundingClientRect();
+    setHoveredCell({ 
+      projectId, 
+      month, 
+      x: event.clientX, 
+      y: event.clientY,
+      targetRect,
+      type 
+    });
+  };
+
+  // Calculate optimal tooltip position based on actual dimensions and cell position
+  const calculateTooltipPosition = () => {
+    if (!hoveredCell || !hoveredCell.targetRect) return { left: 0, top: 0 };
+    
+    // Use actual tooltip dimensions if available, otherwise use estimates
+    const tooltipWidth = tooltipDimensions.width || 400; // Fallback to smaller estimate
+    const tooltipHeight = tooltipDimensions.height || 200; // Fallback to smaller estimate
+    const margin = 15; // safe margin from edges
+    const offset = 8; // small offset from cell
+    
+    const { targetRect } = hoveredCell;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    
+    // Start with preferred position: to the right and slightly below the cell
+    let left = targetRect.right + offset;
+    let top = targetRect.top;
+    
+    // Check if tooltip goes off right edge
+    if (left + tooltipWidth > viewportWidth - margin) {
+      // Try left side of the cell
+      left = targetRect.left - tooltipWidth - offset;
+      
+      // If still off-screen, position it within viewport but close to cell
+      if (left < margin) {
+        left = Math.min(margin, targetRect.left);
+      }
+    }
+    
+    // Check vertical position - keep it near the cell
+    if (top + tooltipHeight > viewportHeight - margin) {
+      // Position above the cell
+      top = targetRect.bottom - tooltipHeight;
+      
+      // If still off-screen, position at bottom with margin
+      if (top < margin) {
+        top = viewportHeight - tooltipHeight - margin;
+      }
+    }
+    
+    // Final bounds check
+    left = Math.min(Math.max(margin, left), viewportWidth - tooltipWidth - margin);
+    top = Math.min(Math.max(margin, top), viewportHeight - tooltipHeight - margin);
+    
+    return { left, top };
   };
 
   const handleCellMouseLeave = () => {
@@ -312,7 +378,7 @@ function SummaryView({ selectedMonth }) {
       {/* High Issue Count Table */}
       {highIssueProjects.length > 0 && (
         <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">High Issue Count (Score ≥6)</h2>
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">High Issue Count (Rating ≥6)</h2>
           
           <div className="w-full">
             <table className="w-full table-fixed">
@@ -385,7 +451,7 @@ function SummaryView({ selectedMonth }) {
 
           {/* Note */}
           <div className="mt-4 text-sm text-gray-600">
-            <span className="font-medium">Note:</span> Shows count of issues with severity score ≥6. Only projects with high issues are displayed.
+            <span className="font-medium">Note:</span> Shows count of issues with severity rating ≥6. Only projects with high issues are displayed.
           </div>
         </div>
       )}
@@ -393,11 +459,11 @@ function SummaryView({ selectedMonth }) {
       {/* Tooltip */}
       {hoveredCell && (
         <div 
-          className="fixed z-50 bg-white rounded-lg shadow-lg border border-gray-200 p-4 max-w-4xl"
+          ref={tooltipRef}
+          className="fixed z-50 bg-white rounded-lg shadow-lg border border-gray-200 p-4 max-w-lg"
           style={{
-            left: Math.min(hoveredCell.x + 10, window.innerWidth - 600),
-            top: Math.max(hoveredCell.y - 10, 10),
-            maxHeight: '400px',
+            ...calculateTooltipPosition(),
+            maxHeight: '300px',
             overflow: 'auto'
           }}
         >
@@ -439,7 +505,7 @@ function SummaryView({ selectedMonth }) {
                         <tr className="bg-gray-50">
                           <th className="px-3 py-2 text-left font-medium text-gray-700 uppercase tracking-wider">Description</th>
                           <th className="px-3 py-2 text-center font-medium text-gray-700 uppercase tracking-wider">
-                            {isIssue ? 'Score' : 'Rating'}
+Rating
                           </th>
                           {!isIssue && (
                             <th className="px-3 py-2 text-left font-medium text-gray-700 uppercase tracking-wider">Owner(s)</th>
@@ -458,7 +524,7 @@ function SummaryView({ selectedMonth }) {
                             </td>
                             <td className="px-3 py-2 text-center">
                               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                {isIssue ? item.score : item.rating}
+                                {item.rating}
                               </span>
                             </td>
                             {!isIssue && (
