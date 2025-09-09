@@ -2,11 +2,26 @@
   "projectId": "PRJ-003",
   "name": "Automated Source-Data Verification (SDV)",
   "purpose": "Use NLP to compare EHR-export PDFs against EDC entries, cutting CRA effort by 50%.",
-  "status": {
-    "overall": "On-track",
-    "phase": "Planning",
-    "percentComplete": 18
-  },
+  "status": [
+    {
+      "id": "S1",
+      "description": "Overall Status",
+      "ragStatus": "Green",
+      "comments": "Green overall - project kicked off in April"
+    },
+    {
+      "id": "S2",
+      "description": "Schedule",
+      "ragStatus": "Green",
+      "comments": null
+    },
+    {
+      "id": "S3",
+      "description": "Scope",
+      "ragStatus": "Green",
+      "comments": null
+    }
+  ],
   "timeline": {
     "start": "2025-02-01",
     "end": "2026-03-31"
@@ -27,7 +42,8 @@
       "likelihood": 2,
       "rating": 8,
       "mitigation": "Develop format-agnostic OCR layer; recruit 3 pilot sites for testing.",
-      "status": "Active"
+      "status": "Active",
+      "escalation": "pending escalation"
     },
     {
       "id": "R2",
@@ -36,7 +52,8 @@
       "likelihood": 3,
       "rating": 9,
       "mitigation": "Migrate inference to cloud burst; reserve compute credits ahead.",
-      "status": "Watch"
+      "status": "Watch",
+      "escalation": "pending escalation"
     },
     {
       "id": "R3",
@@ -45,7 +62,24 @@
       "likelihood": 3,
       "rating": 9,
       "mitigation": "Run side-by-side validation; provide training & incentives.",
-      "status": "Active"
+      "status": "Active",
+      "escalation": "pending escalation"
+    }
+  ],
+  "issues": [
+    {
+      "id": "I1",
+      "description": "OCR accuracy below acceptable thresholds for handwritten clinical notes",
+      "score": 12,
+      "mitigation": "Advanced ML model training with additional handwriting datasets and expert validation",
+      "escalation": "pending escalation"
+    },
+    {
+      "id": "I2",
+      "description": "Integration challenges with multiple EHR vendor APIs causing data extraction delays",
+      "score": 8,
+      "mitigation": "Dedicated API development team and vendor liaison meetings scheduled weekly",
+      "escalation": "pending escalation"
     }
   ],
   "achievements": [

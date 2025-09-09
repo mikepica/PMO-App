@@ -2,11 +2,26 @@
   "projectId": "PRJ-001",
   "name": "AI-Driven Trial Design Optimizer",
   "purpose": "Reduce Phase II protocol amendments by using machine-learning simulations to pre-validate eligibility and endpoints.",
-  "status": {
-    "overall": "On-track",
-    "phase": "Execution",
-    "percentComplete": 62
-  },
+  "status": [
+    {
+      "id": "S1",
+      "description": "Overall Status",
+      "ragStatus": "Green",
+      "comments": "Green overall - project kicked off in April"
+    },
+    {
+      "id": "S2",
+      "description": "Schedule",
+      "ragStatus": "Green",
+      "comments": null
+    },
+    {
+      "id": "S3",
+      "description": "Scope",
+      "ragStatus": "Green",
+      "comments": null
+    }
+  ],
   "timeline": {
     "start": "2024-10-01",
     "end": "2025-12-31"
@@ -24,10 +39,11 @@
       "id": "R1",
       "description": "Regulatory acceptance of simulated arms may lag.",
       "impact": 4,
-      "likelihood": 3,
-      "rating": 12,
+      "likelihood": 4,
+      "rating": 16,
       "mitigation": "Early FDA/EMA consultation; publish validation white paper.",
-      "status": "Active"
+      "status": "Active",
+      "escalation": "pending escalation"
     },
     {
       "id": "R2",
@@ -36,7 +52,8 @@
       "likelihood": 3,
       "rating": 9,
       "mitigation": "License external datasets; use data-augmentation techniques.",
-      "status": "Active"
+      "status": "Active",
+      "escalation": "pending escalation"
     },
     {
       "id": "R3",
@@ -45,7 +62,24 @@
       "likelihood": 2,
       "rating": 6,
       "mitigation": "Implement knowledge-transfer sessions; engage backup consultants.",
-      "status": "Watch"
+      "status": "Watch",
+      "escalation": "pending escalation"
+    }
+  ],
+  "issues": [
+    {
+      "id": "I1",
+      "description": "User adoption resistance from clinical teams due to workflow changes",
+      "score": 5,
+      "mitigation": "Enhanced training program and change management support implemented",
+      "escalation": "pending escalation"
+    },
+    {
+      "id": "I2",
+      "description": "Data privacy audit findings requiring architecture modifications",
+      "score": 12,
+      "mitigation": "Security team working on compliance updates and data anonymization enhancements",
+      "escalation": "pending escalation"
     }
   ],
   "achievements": [

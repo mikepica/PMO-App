@@ -6,6 +6,8 @@ import { loadSystemPrompt } from './config/systemPrompt';
 import ReactMarkdown from 'react-markdown';
 import ProjectTabs from './components/ProjectTabs';
 import ProjectDetailView from './components/ProjectDetailView';
+import SummaryView from './components/SummaryView';
+import ProjectSelector from './components/ProjectSelector';
 import AIContextSelector from './components/AIContextSelector';
 import ChatThreadManager from './components/ChatThreadManager';
 import Modal from './components/Modal';
@@ -40,10 +42,10 @@ function ProjectView({ selectedMonth, onMonthChange }) {
   const availableMonths = getAvailableMonths();
   const selectedProject = getProgram(projectId, selectedMonth);
   
-  // Redirect to first project if invalid projectId
+  // Redirect to summary if invalid projectId
   useEffect(() => {
     if (!selectedProject && programs.projects.length > 0) {
-      navigate(`/project/${programs.projects[0].projectId}`);
+      navigate('/summary');
     }
   }, [selectedProject, navigate]);
 
@@ -61,6 +63,18 @@ function ProjectView({ selectedMonth, onMonthChange }) {
   );
 }
 
+function SummaryViewWrapper({ selectedMonth, onMonthChange }) {
+  const availableMonths = getAvailableMonths();
+  
+  return (
+    <SummaryView
+      selectedMonth={selectedMonth}
+      availableMonths={availableMonths}
+      onMonthChange={onMonthChange}
+    />
+  );
+}
+
 function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: onMonthChangeFromApp }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -69,7 +83,7 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
   
   // Month-related state
   const [selectedMonth, setSelectedMonth] = useState(initialSelectedMonth || currentMonth);
-  const [contextMonths, setContextMonths] = useState([initialSelectedMonth || currentMonth]);
+  const [contextMonths, setContextMonths] = useState([currentMonth]);
 
   // Thread-related state
   const [threads, setThreads] = useState([]);
@@ -101,8 +115,16 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
     }
   };
 
-  // Extract current projectId from URL
-  const currentProjectId = location.pathname.split('/').pop();
+  // Extract current tab from URL
+  const getCurrentTab = () => {
+    const path = location.pathname;
+    if (path === '/summary') {
+      return 'summary';
+    }
+    return path.split('/').pop();
+  };
+  
+  const currentTab = getCurrentTab();
 
   // Load system prompt on component mount
   useEffect(() => {
@@ -135,6 +157,8 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
         if (newThread) {
           setCurrentThreadId(newThread.id);
           setThreads([newThread]);
+          // Set default context for new thread
+          updateThreadContext(newThread.id, programs.projects.map(p => p.projectId), [currentMonth], currentMonth);
         }
       }
     };
@@ -142,15 +166,15 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
     loadThreads();
   }, [currentMonth, onMonthChangeFromApp]);
 
-  const handleTabSelect = (projectId) => {
-    navigate(`/project/${projectId}`);
+  const handleTabSelect = (tabId) => {
+    if (tabId === 'summary') {
+      navigate('/summary');
+    } else {
+      navigate(`/project/${tabId}`);
+    }
   };
 
-  const handleContextToggle = (projectId) => {
-    const newContextProjects = contextProjects.includes(projectId)
-      ? contextProjects.filter(id => id !== projectId)
-      : [...contextProjects, projectId];
-    
+  const handleContextProjectsChange = (newContextProjects) => {
     setContextProjects(newContextProjects);
     
     // Save context change to current thread
@@ -165,8 +189,12 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
     setThreads(getThreadsArray());
     setCurrentThreadId(newThread.id);
     setMessages([]);
-    // Keep current context settings for new thread
-    updateThreadContext(newThread.id, contextProjects, contextMonths, selectedMonth);
+    // Reset to default context for new thread
+    const defaultContextProjects = programs.projects.map(p => p.projectId);
+    const defaultContextMonths = [currentMonth];
+    setContextProjects(defaultContextProjects);
+    setContextMonths(defaultContextMonths);
+    updateThreadContext(newThread.id, defaultContextProjects, defaultContextMonths, selectedMonth);
   };
 
   const handleThreadSelect = (threadId) => {
@@ -284,6 +312,15 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
       });
 
       const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error?.message || `API Error: ${response.status} ${response.statusText}`);
+      }
+      
+      if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+        throw new Error('Invalid response format from API');
+      }
+
       const assistantMessage = {
         id: Date.now() + 1,
         text: data.choices[0].message.content,
@@ -301,7 +338,7 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
       console.error('Error fetching response:', error);
       const errorMessage = {
         id: Date.now() + 1,
-        text: 'Error processing request. Please try again.',
+        text: `Error: ${error.message}. Please try again.`,
         sender: 'assistant'
       };
       
@@ -333,16 +370,14 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
             <div className="max-w-4xl w-full overflow-x-auto px-2">
               <ProjectTabs
                 projects={getProjects(selectedMonth)}
-                selectedTab={currentProjectId}
+                selectedTab={currentTab}
                 onTabSelect={handleTabSelect}
-                contextProjects={contextProjects}
-                onContextToggle={handleContextToggle}
               />
             </div>
           </div>
           
           {/* Right: AI Chat Button */}
-          <div className="flex space-x-6 flex-shrink-0">
+          <div className="flex items-center space-x-4 flex-shrink-0">
             <button
               className={`flex flex-col items-center focus:outline-none ${showChat ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'}`}
               onClick={() => setShowChat((v) => !v)}
@@ -378,13 +413,25 @@ function Layout({ children, selectedMonth: initialSelectedMonth, onMonthChange: 
             <div className="mb-4">
               <div className="text-sm text-gray-600 mb-3">
                 Context: {contextProjects.length} projects selected
+                {messages.length > 0 && (
+                  <span className="ml-2 text-xs text-amber-600">(locked for this conversation)</span>
+                )}
               </div>
-              <AIContextSelector
-                availableMonths={availableMonths}
-                selectedMonths={contextMonths}
-                onMonthsChange={handleContextMonthsChange}
-                currentMonth={currentMonth}
-              />
+              <div className="flex space-x-3">
+                <ProjectSelector
+                  projects={getProjects(selectedMonth)}
+                  selectedProjects={contextProjects}
+                  onProjectsChange={handleContextProjectsChange}
+                  isLocked={messages.length > 0}
+                />
+                <AIContextSelector
+                  availableMonths={availableMonths}
+                  selectedMonths={contextMonths}
+                  onMonthsChange={handleContextMonthsChange}
+                  currentMonth={currentMonth}
+                  isLocked={messages.length > 0}
+                />
+              </div>
             </div>
             <div className="flex-1 min-h-0 overflow-y-auto">
               {messages.length === 0 && (
@@ -485,7 +532,12 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Navigate to={`/project/${programs.projects[0]?.projectId || 'PRJ-001'}`} replace />} />
+      <Route path="/" element={<Navigate to="/summary" replace />} />
+      <Route path="/summary" element={
+        <Layout selectedMonth={selectedMonth} onMonthChange={setSelectedMonth}>
+          <SummaryViewWrapper selectedMonth={selectedMonth} onMonthChange={setSelectedMonth} />
+        </Layout>
+      } />
       <Route path="/project/:projectId" element={
         <Layout selectedMonth={selectedMonth} onMonthChange={setSelectedMonth}>
           <ProjectView selectedMonth={selectedMonth} onMonthChange={setSelectedMonth} />

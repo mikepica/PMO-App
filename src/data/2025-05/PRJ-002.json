@@ -2,11 +2,26 @@
   "projectId": "PRJ-002",
   "name": "Digital Biomarker Capture Platform",
   "purpose": "Enable at-home collection of continuous mobility and sleep data for neurology studies.",
-  "status": {
-    "overall": "On-track",
-    "phase": "Execution",
-    "percentComplete": 35
-  },
+  "status": [
+    {
+      "id": "S1",
+      "description": "Overall Status",
+      "ragStatus": "Green",
+      "comments": "Green overall - project kicked off in April"
+    },
+    {
+      "id": "S2",
+      "description": "Schedule",
+      "ragStatus": "Green",
+      "comments": null
+    },
+    {
+      "id": "S3",
+      "description": "Scope",
+      "ragStatus": "Green",
+      "comments": null
+    }
+  ],
   "timeline": {
     "start": "2024-07-15",
     "end": "2025-11-30"
@@ -24,7 +39,8 @@
       "likelihood": 4,
       "rating": 12,
       "mitigation": "Evaluating multiple sensor vendors for battery optimization.",
-      "status": "Active"
+      "status": "Active",
+      "escalation": "pending escalation"
     },
     {
       "id": "R2",
@@ -33,7 +49,24 @@
       "likelihood": 4,
       "rating": 8,
       "mitigation": "Working with legal team on privacy framework.",
-      "status": "Active"
+      "status": "Active",
+      "escalation": "pending escalation"
+    }
+  ],
+  "issues": [
+    {
+      "id": "I1",
+      "description": "Device compatibility issues with certain smartphone models affecting data sync",
+      "score": 10,
+      "mitigation": "Hardware team developing universal adapter and updated firmware",
+      "escalation": "pending escalation"
+    },
+    {
+      "id": "I2",
+      "description": "Participant dropout rate higher than expected in pilot studies",
+      "score": 8,
+      "mitigation": "Enhanced participant engagement protocol and incentive program rollout",
+      "escalation": "pending escalation"
     }
   ],
   "achievements": [

@@ -80,6 +80,7 @@
       "mitigation": "Cloud migration assessment completed; infrastructure upgrade proposal finalized. IT team preparing migration plan for execution by Q3's end to implement new cloud platform. Vendor to provide cost estimates and migration timeline, requiring additional project management support.",
       "status": "Active",
       "owner": "Lisa Thompson",
+      "escalation": "pending escalation",
       "escalationAction": "Budget reallocation required; Approve cloud infrastructure migration proposal with AWS",
       "workstream": "Infrastructure & Platform"
     },
@@ -92,10 +93,28 @@
       "mitigation": "DevOps, Analytics Team and Business Intelligence to develop monitoring implementation roadmap.",
       "status": "Active",
       "owner": "Alex Rodriguez, Lisa Thompson",
+      "escalation": "pending escalation",
       "escalationAction": null,
       "workstream": "Analytics Platform"
     }
   ],
+
+"issues": [
+  {
+    "id": "I1",
+    "description": "Stakeholder alignment challenges causing scope creep and requirement changes",
+    "score": 6,
+    "mitigation": "Weekly stakeholder alignment meetings and formal change control process implementation",
+    "escalation": "pending escalation"
+  },
+  {
+    "id": "I2",
+    "description": "Performance benchmarking results below target specifications affecting user experience",
+    "score": 10,
+    "mitigation": "Performance optimization team formed with dedicated architecture review and system tuning",
+    "escalation": "pending escalation"
+  }
+],
 
 "achievements": [
   {

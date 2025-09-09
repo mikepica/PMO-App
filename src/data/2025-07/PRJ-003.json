@@ -2,11 +2,26 @@
   "projectId": "PRJ-003",
   "name": "Automated Source-Data Verification (SDV)",
   "purpose": "Use NLP to compare EHR-export PDFs against EDC entries, cutting CRA effort by 50 %.",
-  "status": {
-    "overall": "On-track",
-    "phase": "Planning",
-    "percentComplete": 18
-  },
+  "status": [
+    {
+      "id": "S1",
+      "description": "Overall Status",
+      "ragStatus": "Green",
+      "comments": "Green overall - project kicked off in April"
+    },
+    {
+      "id": "S2",
+      "description": "Schedule",
+      "ragStatus": "Green",
+      "comments": null
+    },
+    {
+      "id": "S3",
+      "description": "Scope",
+      "ragStatus": "Green",
+      "comments": null
+    }
+  ],
   "timeline": {
     "start": "2025-02-01",
     "end": "2026-03-31"
@@ -24,10 +39,11 @@
       "id": "R1",
       "description": "Site EHR export formats highly variable.",
       "impact": 4,
-      "likelihood": 2,
-      "rating": 8,
+      "likelihood": 4,
+      "rating": 16,
       "mitigation": "Develop format-agnostic OCR layer; recruit 3 pilot sites for testing.",
-      "status": "Active"
+      "status": "Active",
+      "escalation": "pending escalation"
     },
     {
       "id": "R2",
@@ -36,7 +52,8 @@
       "likelihood": 3,
       "rating": 9,
       "mitigation": "Migrate inference to cloud burst; reserve compute credits ahead.",
-      "status": "Watch"
+      "status": "Watch",
+      "escalation": "pending escalation"
     },
     {
       "id": "R3",
@@ -45,7 +62,24 @@
       "likelihood": 3,
       "rating": 9,
       "mitigation": "Run side-by-side validation; provide training & incentives.",
-      "status": "Active"
+      "status": "Active",
+      "escalation": "pending escalation"
+    }
+  ],
+  "issues": [
+    {
+      "id": "I1",
+      "description": "AI model producing false positives requiring excessive manual review overhead",
+      "score": 10,
+      "mitigation": "Model retraining with expanded negative examples and precision-focused optimization",
+      "escalation": "pending escalation"
+    },
+    {
+      "id": "I2",
+      "description": "Compliance audit requirements exceed initial scope adding development complexity",
+      "score": 8,
+      "mitigation": "Regulatory affairs team expanding compliance framework and documentation protocols",
+      "escalation": "pending escalation"
     }
   ],
   "achievements": [

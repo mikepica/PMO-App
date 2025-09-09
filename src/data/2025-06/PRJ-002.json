@@ -2,11 +2,26 @@
   "projectId": "PRJ-002",
   "name": "Digital Biomarker Capture Platform",
   "purpose": "Enable at-home collection of continuous mobility and sleep data for neurology studies.",
-  "status": {
-    "overall": "At-risk",
-    "phase": "Execution",
-    "percentComplete": 41
-  },
+  "status": [
+    {
+      "id": "S1",
+      "description": "Overall Status",
+      "ragStatus": "Amber",
+      "comments": "At-risk due to battery life concerns"
+    },
+    {
+      "id": "S2",
+      "description": "Schedule",
+      "ragStatus": "Amber",
+      "comments": null
+    },
+    {
+      "id": "S3",
+      "description": "Scope",
+      "ragStatus": "Green",
+      "comments": null
+    }
+  ],
   "timeline": {
     "start": "2024-07-15",
     "end": "2025-11-30"
@@ -27,7 +42,8 @@
       "likelihood": 4,
       "rating": 12,
       "mitigation": "Pilot alternate sensors; add wired charging kit.",
-      "status": "Active"
+      "status": "Active",
+      "escalation": "pending escalation"
     },
     {
       "id": "R2",
@@ -36,7 +52,8 @@
       "likelihood": 4,
       "rating": 8,
       "mitigation": "Implement on-device aggregation; anonymize location traces.",
-      "status": "Active"
+      "status": "Active",
+      "escalation": "pending escalation"
     },
     {
       "id": "R3",
@@ -45,7 +62,24 @@
       "likelihood": 3,
       "rating": 9,
       "mitigation": "Dual-source suppliers; expedite certification testing.",
-      "status": "Watch"
+      "status": "Watch",
+      "escalation": "pending escalation"
+    }
+  ],
+  "issues": [
+    {
+      "id": "I1",
+      "description": "Clinical site onboarding delays due to IT infrastructure requirements",
+      "score": 6,
+      "mitigation": "Simplified deployment package and dedicated technical support team assigned",
+      "escalation": "pending escalation"
+    },
+    {
+      "id": "I2",
+      "description": "Regulatory submission documentation incomplete for EU markets",
+      "score": 11,
+      "mitigation": "External regulatory consultants engaged and documentation review accelerated",
+      "escalation": "pending escalation"
     }
   ],
   "achievements": [
