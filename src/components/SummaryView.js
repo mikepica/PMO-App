@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import MonthSelector from './MonthSelector';
-import { getProjects } from '../data/index';
+import { getProjects, getAvailableMonths } from '../data/index';
 
-function SummaryView({ selectedMonth, availableMonths, onMonthChange }) {
+function SummaryView({ selectedMonth }) {
   // Hover state for tooltip
   const [hoveredCell, setHoveredCell] = useState(null);
   // Get the overall RAG status for a project
@@ -52,6 +51,27 @@ function SummaryView({ selectedMonth, availableMonths, onMonthChange }) {
 
   // Get all projects for the current month
   const currentProjects = getProjects(selectedMonth);
+  
+  // Get available months
+  const availableMonths = getAvailableMonths();
+  
+  // Get all unique projects across all months
+  const getAllUniqueProjects = () => {
+    const uniqueProjectsMap = new Map();
+    
+    for (const month of availableMonths) {
+      const projectsForMonth = getProjects(month);
+      projectsForMonth.forEach(project => {
+        if (!uniqueProjectsMap.has(project.projectId)) {
+          uniqueProjectsMap.set(project.projectId, project);
+        }
+      });
+    }
+    
+    return Array.from(uniqueProjectsMap.values());
+  };
+  
+  const allUniqueProjects = getAllUniqueProjects();
 
   // Get high risk count for a project in a specific month
   const getHighRiskCount = (project) => {
@@ -74,7 +94,7 @@ function SummaryView({ selectedMonth, availableMonths, onMonthChange }) {
   };
 
   // Get projects that have high risks in any month
-  const highRiskProjects = currentProjects.filter(project => hasHighRisks(project.projectId));
+  const highRiskProjects = allUniqueProjects.filter(project => hasHighRisks(project.projectId));
 
   // Get high issue count for a project in a specific month
   const getHighIssueCount = (project) => {
@@ -97,7 +117,7 @@ function SummaryView({ selectedMonth, availableMonths, onMonthChange }) {
   };
 
   // Get projects that have high issues in any month
-  const highIssueProjects = currentProjects.filter(project => hasHighIssues(project.projectId));
+  const highIssueProjects = allUniqueProjects.filter(project => hasHighIssues(project.projectId));
 
   // Get high risks for a specific project and month (for tooltip)
   const getHighRisks = (projectId, month) => {
@@ -130,29 +150,6 @@ function SummaryView({ selectedMonth, availableMonths, onMonthChange }) {
 
   return (
     <div className="space-y-6">
-      {/* Summary Header */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              Program Summary
-            </h1>
-            <p className="text-gray-600">
-              Overall status view across all projects
-            </p>
-          </div>
-          <div className="text-right">
-            {availableMonths && onMonthChange && (
-              <MonthSelector
-                availableMonths={availableMonths}
-                selectedMonth={selectedMonth}
-                onMonthChange={onMonthChange}
-              />
-            )}
-          </div>
-        </div>
-      </div>
-
       {/* Overall Program Status Table */}
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">Overall Program Status</h2>
