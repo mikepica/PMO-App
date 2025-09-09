@@ -167,9 +167,9 @@ function SummaryView({ selectedMonth }) {
   const calculateTooltipPosition = () => {
     if (!hoveredCell || !hoveredCell.targetRect) return { left: 0, top: 0 };
     
-    // Use actual tooltip dimensions if available, otherwise use estimates
-    const tooltipWidth = tooltipDimensions.width || 400; // Fallback to smaller estimate
-    const tooltipHeight = tooltipDimensions.height || 200; // Fallback to smaller estimate
+    // Use actual tooltip dimensions if available, otherwise use estimates for larger tooltips
+    const tooltipWidth = tooltipDimensions.width || 800; // Fallback to larger estimate
+    const tooltipHeight = tooltipDimensions.height || 500; // Fallback to larger estimate
     const margin = 15; // safe margin from edges
     const offset = 8; // small offset from cell
     
@@ -460,11 +460,9 @@ function SummaryView({ selectedMonth }) {
       {hoveredCell && (
         <div 
           ref={tooltipRef}
-          className="fixed z-50 bg-white rounded-lg shadow-lg border border-gray-200 p-4 max-w-lg"
+          className="fixed z-50 bg-white rounded-lg shadow-lg border border-gray-200 p-4 max-w-4xl"
           style={{
-            ...calculateTooltipPosition(),
-            maxHeight: '300px',
-            overflow: 'auto'
+            ...calculateTooltipPosition()
           }}
         >
           {(() => {
@@ -499,8 +497,8 @@ function SummaryView({ selectedMonth }) {
                     {isIssue ? 'No high issues (≥6) for this period' : 'No high risks (≥16) for this period'}
                   </p>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full text-xs">
+                  <div>
+                    <table className="w-full text-xs">
                       <thead>
                         <tr className="bg-gray-50">
                           <th className="px-3 py-2 text-left font-medium text-gray-700 uppercase tracking-wider">Description</th>
@@ -517,8 +515,8 @@ Rating
                       <tbody className="bg-white divide-y divide-gray-200">
                         {items.map((item, index) => (
                           <tr key={item.id || index} className="hover:bg-gray-50">
-                            <td className="px-3 py-2 text-gray-900 max-w-xs">
-                              <div className="line-clamp-3" title={item.description}>
+                            <td className="px-3 py-2 text-gray-900">
+                              <div title={item.description}>
                                 {item.description}
                               </div>
                             </td>
@@ -528,17 +526,17 @@ Rating
                               </span>
                             </td>
                             {!isIssue && (
-                              <td className="px-3 py-2 text-gray-900 max-w-xs">
+                              <td className="px-3 py-2 text-gray-900">
                                 {item.owner || 'N/A'}
                               </td>
                             )}
-                            <td className="px-3 py-2 text-gray-900 max-w-xs">
-                              <div className="line-clamp-2" title={item.mitigation}>
+                            <td className="px-3 py-2 text-gray-900">
+                              <div title={item.mitigation}>
                                 {item.mitigation || 'N/A'}
                               </div>
                             </td>
-                            <td className="px-3 py-2 text-gray-900 max-w-xs">
-                              <div className="line-clamp-2" title={item.escalation}>
+                            <td className="px-3 py-2 text-gray-900">
+                              <div title={item.escalation}>
                                 {item.escalation || 'N/A'}
                               </div>
                             </td>
