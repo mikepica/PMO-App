@@ -32,7 +32,10 @@
       "email": "elena.ruiz@company.com"
     },
     "sponsor": "Head of Clinical Ops",
-    "steeringCommittee": ["CDO", "VP Biometrics"]
+    "steeringCommittee": [
+      "CDO",
+      "VP Biometrics"
+    ]
   },
   "risks": [
     {
@@ -111,7 +114,9 @@
       "due": "2025-09-15",
       "status": "Planned",
       "owner": "Clinical Innovation Team",
-      "dependencies": ["D1"]
+      "dependencies": [
+        "D1"
+      ]
     },
     {
       "id": "D3",
@@ -119,7 +124,9 @@
       "due": "2025-11-30",
       "status": "Not Started",
       "owner": "Platform Engineering",
-      "dependencies": ["D2"]
+      "dependencies": [
+        "D2"
+      ]
     }
   ],
   "budget": {
@@ -132,5 +139,26 @@
     "resourceFTE": 6,
     "milestoneVarianceDays": -5
   },
-  "notes": ""
+  "notes": "",
+  "movementAnalysis": {
+    "projectId": "PRJ-001",
+    "projectName": "AI-Driven Trial Design Optimizer",
+    "analysisDate": "2025-09-25T15:31:31.106Z",
+    "currentMonth": "2025-07",
+    "previousMonth": "2025-06",
+    "movements": {
+      "risk": {
+        "direction": "increased",
+        "from": 0,
+        "to": 1,
+        "explanation": "The high risk count increased due to the identification of a new risk concerning the regulatory acceptance of simulated arms, which carries a significant impact and likelihood of occurrence, highlighting the need for early engagement with regulatory bodies and strategic validation efforts."
+      },
+      "issue": {
+        "direction": "decreased",
+        "from": 2,
+        "to": 1,
+        "explanation": "The high issue count decreased from 2 to 1 as one of the previous high-severity issues was either resolved or its severity was reduced through effective mitigation strategies, and a new high-severity issue related to data privacy audit findings emerged, requiring significant architecture modifications."
+      }
+    }
+  }
 }

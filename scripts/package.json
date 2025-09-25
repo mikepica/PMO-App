@@ -1,0 +1,19 @@
+{
+  "name": "pmo-movement-generator",
+  "version": "1.0.0",
+  "description": "Generate AI explanations for project movement changes",
+  "main": "generateMovementExplanations.js",
+  "scripts": {
+    "generate-explanations": "node generateMovementExplanations.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "openai": "^4.20.0",
+    "dotenv": "^16.3.1",
+    "yargs": "^17.7.2",
+    "chalk": "^4.1.2"
+  },
+  "keywords": ["pmo", "ai", "movement", "analysis"],
+  "author": "",
+  "license": "ISC"
+}

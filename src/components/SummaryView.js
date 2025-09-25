@@ -357,7 +357,24 @@ function SummaryView({ selectedMonth }) {
                     })}
                     <td className="px-4 py-4 text-center">
                       {movement ? (
-                        <span className={`text-lg font-bold ${movement.color}`} title={`Status ${movement.direction === 'up' ? 'improved' : movement.direction === 'down' ? 'declined' : 'unchanged'} from previous month`}>
+                        <span
+                          className={`text-lg font-bold ${movement.color} cursor-help`}
+                          onMouseEnter={(e) => {
+                            // Get project data from the current month where movement analysis is stored
+                            const currentMonthProjects = getProjects(currentMonth);
+                            const projectWithAnalysis = currentMonthProjects.find(p => p.projectId === project.projectId);
+                            const explanation = projectWithAnalysis?.movementAnalysis?.movements?.status?.explanation;
+                            if (explanation) {
+                              handleCellMouseEnter(project.projectId, currentMonth, e, 'status-movement');
+                            }
+                          }}
+                          onMouseLeave={handleCellMouseLeave}
+                          title={(() => {
+                            const currentMonthProjects = getProjects(currentMonth);
+                            const projectWithAnalysis = currentMonthProjects.find(p => p.projectId === project.projectId);
+                            return projectWithAnalysis?.movementAnalysis?.movements?.status?.explanation || `Status ${movement.direction === 'up' ? 'improved' : movement.direction === 'down' ? 'declined' : 'unchanged'} from previous month`;
+                          })()}
+                        >
                           {movement.symbol}
                         </span>
                       ) : (
@@ -445,13 +462,6 @@ function SummaryView({ selectedMonth }) {
                         const projectInMonth = projectsForMonth.find(p => p.projectId === project.projectId);
                         const highRiskCount = projectInMonth ? getHighRiskCount(projectInMonth) : 0;
 
-                        // Color coding based on count
-                        const getCountColor = (count) => {
-                          if (count === 0) return 'text-gray-500';
-                          if (count === 1) return 'text-orange-600 font-semibold';
-                          if (count === 2) return 'text-red-600 font-bold';
-                          return 'text-red-800 font-bold bg-red-100 px-2 py-1 rounded';
-                        };
 
                         return (
                           <td
@@ -460,7 +470,7 @@ function SummaryView({ selectedMonth }) {
                             onMouseEnter={(e) => handleCellMouseEnter(project.projectId, month, e)}
                             onMouseLeave={handleCellMouseLeave}
                           >
-                            <span className={getCountColor(highRiskCount)}>
+                            <span className="text-black">
                               {highRiskCount}
                             </span>
                           </td>
@@ -468,7 +478,24 @@ function SummaryView({ selectedMonth }) {
                       })}
                       <td className="px-4 py-4 text-center">
                         {movement ? (
-                          <span className={`text-lg font-bold ${movement.color}`} title={`High risk count ${movement.direction === 'up' ? 'increased' : movement.direction === 'down' ? 'decreased' : 'unchanged'} from previous month`}>
+                          <span
+                            className={`text-lg font-bold ${movement.color} cursor-help`}
+                            onMouseEnter={(e) => {
+                              // Get project data from the current month where movement analysis is stored
+                              const currentMonthProjects = getProjects(currentMonth);
+                              const projectWithAnalysis = currentMonthProjects.find(p => p.projectId === project.projectId);
+                              const explanation = projectWithAnalysis?.movementAnalysis?.movements?.risk?.explanation;
+                              if (explanation) {
+                                handleCellMouseEnter(project.projectId, currentMonth, e, 'risk-movement');
+                              }
+                            }}
+                            onMouseLeave={handleCellMouseLeave}
+                            title={(() => {
+                              const currentMonthProjects = getProjects(currentMonth);
+                              const projectWithAnalysis = currentMonthProjects.find(p => p.projectId === project.projectId);
+                              return projectWithAnalysis?.movementAnalysis?.movements?.risk?.explanation || `High risk count ${movement.direction === 'up' ? 'increased' : movement.direction === 'down' ? 'decreased' : 'unchanged'} from previous month`;
+                            })()}
+                          >
                             {movement.symbol}
                           </span>
                         ) : (
@@ -545,13 +572,6 @@ function SummaryView({ selectedMonth }) {
                         const projectInMonth = projectsForMonth.find(p => p.projectId === project.projectId);
                         const highIssueCount = projectInMonth ? getHighIssueCount(projectInMonth) : 0;
 
-                        // Color coding based on count
-                        const getCountColor = (count) => {
-                          if (count === 0) return 'text-gray-500';
-                          if (count === 1) return 'text-orange-600 font-semibold';
-                          if (count === 2) return 'text-red-600 font-bold';
-                          return 'text-red-800 font-bold bg-red-100 px-2 py-1 rounded';
-                        };
 
                         return (
                           <td
@@ -560,7 +580,7 @@ function SummaryView({ selectedMonth }) {
                             onMouseEnter={(e) => handleCellMouseEnter(project.projectId, month, e, 'issue')}
                             onMouseLeave={handleCellMouseLeave}
                           >
-                            <span className={getCountColor(highIssueCount)}>
+                            <span className="text-black">
                               {highIssueCount}
                             </span>
                           </td>
@@ -568,7 +588,24 @@ function SummaryView({ selectedMonth }) {
                       })}
                       <td className="px-4 py-4 text-center">
                         {movement ? (
-                          <span className={`text-lg font-bold ${movement.color}`} title={`High issue count ${movement.direction === 'up' ? 'increased' : movement.direction === 'down' ? 'decreased' : 'unchanged'} from previous month`}>
+                          <span
+                            className={`text-lg font-bold ${movement.color} cursor-help`}
+                            onMouseEnter={(e) => {
+                              // Get project data from the current month where movement analysis is stored
+                              const currentMonthProjects = getProjects(currentMonth);
+                              const projectWithAnalysis = currentMonthProjects.find(p => p.projectId === project.projectId);
+                              const explanation = projectWithAnalysis?.movementAnalysis?.movements?.issue?.explanation;
+                              if (explanation) {
+                                handleCellMouseEnter(project.projectId, currentMonth, e, 'issue-movement');
+                              }
+                            }}
+                            onMouseLeave={handleCellMouseLeave}
+                            title={(() => {
+                              const currentMonthProjects = getProjects(currentMonth);
+                              const projectWithAnalysis = currentMonthProjects.find(p => p.projectId === project.projectId);
+                              return projectWithAnalysis?.movementAnalysis?.movements?.issue?.explanation || `High issue count ${movement.direction === 'up' ? 'increased' : movement.direction === 'down' ? 'decreased' : 'unchanged'} from previous month`;
+                            })()}
+                          >
                             {movement.symbol}
                           </span>
                         ) : (
@@ -599,20 +636,81 @@ function SummaryView({ selectedMonth }) {
           }}
         >
           {(() => {
+            const isMovementTooltip = hoveredCell.type.includes('-movement');
+
+            if (isMovementTooltip) {
+              // Handle movement explanation tooltips
+              const project = getProjects(hoveredCell.month).find(p => p.projectId === hoveredCell.projectId);
+              const projectName = project ? project.name : hoveredCell.projectId;
+
+              const formatMonthDisplay = (monthStr) => {
+                try {
+                  const [year, monthNum] = monthStr.split('-');
+                  const date = new Date(parseInt(year), parseInt(monthNum) - 1);
+                  return date.toLocaleDateString('en-US', {
+                    month: 'long',
+                    year: 'numeric'
+                  });
+                } catch {
+                  return monthStr;
+                }
+              };
+
+              const movementType = hoveredCell.type.replace('-movement', '');
+              const explanation = project?.movementAnalysis?.movements?.[movementType]?.explanation;
+              const movement = project?.movementAnalysis?.movements?.[movementType];
+
+              return (
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-800 mb-3 border-b pb-2">
+                    {movementType === 'status' ? 'Status' : movementType === 'risk' ? 'Risk' : 'Issue'} Movement Analysis - {projectName}
+                  </h3>
+
+                  {explanation ? (
+                    <div className="space-y-3">
+                      {movement && (
+                        <div className="text-sm">
+                          <span className="font-medium text-gray-700">Change: </span>
+                          <span className="text-gray-600">
+                            {movementType === 'status'
+                              ? `${movement.from} → ${movement.to}`
+                              : `${movement.from} → ${movement.to} ${movementType === 'risk' ? 'high risks' : 'high issues'}`
+                            }
+                          </span>
+                        </div>
+                      )}
+                      <div className="text-sm">
+                        <span className="font-medium text-gray-700">Analysis: </span>
+                        <span className="text-gray-800">{explanation}</span>
+                      </div>
+                      <div className="text-xs text-gray-500 mt-2 pt-2 border-t">
+                        Generated: {new Date(project?.movementAnalysis?.analysisDate).toLocaleDateString()}
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-500 italic">
+                      No movement analysis available. Run the explanation generator script to add AI insights.
+                    </p>
+                  )}
+                </div>
+              );
+            }
+
+            // Handle existing risk/issue tooltips
             const isIssue = hoveredCell.type === 'issue';
-            const items = isIssue 
+            const items = isIssue
               ? getHighIssues(hoveredCell.projectId, hoveredCell.month)
               : getHighRisks(hoveredCell.projectId, hoveredCell.month);
             const project = getProjects(hoveredCell.month).find(p => p.projectId === hoveredCell.projectId);
             const projectName = project ? project.name : hoveredCell.projectId;
-            
+
             const formatMonthDisplay = (monthStr) => {
               try {
                 const [year, monthNum] = monthStr.split('-');
                 const date = new Date(parseInt(year), parseInt(monthNum) - 1);
-                return date.toLocaleDateString('en-US', { 
-                  month: 'long', 
-                  year: 'numeric' 
+                return date.toLocaleDateString('en-US', {
+                  month: 'long',
+                  year: 'numeric'
                 });
               } catch {
                 return monthStr;

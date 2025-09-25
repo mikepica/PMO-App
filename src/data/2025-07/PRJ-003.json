@@ -32,7 +32,9 @@
       "email": "priya.patel@company.com"
     },
     "sponsor": "VP Site Monitoring",
-    "steeringCommittee": ["QA Director"]
+    "steeringCommittee": [
+      "QA Director"
+    ]
   },
   "risks": [
     {
@@ -111,7 +113,9 @@
       "due": "2025-09-15",
       "status": "Planned",
       "owner": "ML Engineering",
-      "dependencies": ["D1"]
+      "dependencies": [
+        "D1"
+      ]
     },
     {
       "id": "D3",
@@ -119,7 +123,9 @@
       "due": "2025-12-31",
       "status": "Not Started",
       "owner": "Site Monitoring",
-      "dependencies": ["D2"]
+      "dependencies": [
+        "D2"
+      ]
     }
   ],
   "budget": {
@@ -132,5 +138,20 @@
     "resourceFTE": 3,
     "milestoneVarianceDays": -2
   },
-  "notes": ""
+  "notes": "",
+  "movementAnalysis": {
+    "projectId": "PRJ-003",
+    "projectName": "Automated Source-Data Verification (SDV)",
+    "analysisDate": "2025-09-25T15:31:35.104Z",
+    "currentMonth": "2025-07",
+    "previousMonth": "2025-06",
+    "movements": {
+      "risk": {
+        "direction": "increased",
+        "from": 0,
+        "to": 1,
+        "explanation": "The high risk count increased due to the identification of a new risk associated with the variability in Site EHR export formats, which poses a significant challenge to data integration efforts, necessitating the development of a format-agnostic OCR layer and pilot testing to mitigate its impact."
+      }
+    }
+  }
 }
