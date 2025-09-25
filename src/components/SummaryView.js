@@ -627,18 +627,6 @@ function SummaryView({ selectedMonth }) {
               const project = getProjects(hoveredCell.month).find(p => p.projectId === hoveredCell.projectId);
               const projectName = project ? project.name : hoveredCell.projectId;
 
-              const formatMonthDisplay = (monthStr) => {
-                try {
-                  const [year, monthNum] = monthStr.split('-');
-                  const date = new Date(parseInt(year), parseInt(monthNum) - 1);
-                  return date.toLocaleDateString('en-US', {
-                    month: 'long',
-                    year: 'numeric'
-                  });
-                } catch {
-                  return monthStr;
-                }
-              };
 
               const movementType = hoveredCell.type.replace('-movement', '');
               const explanation = project?.movementAnalysis?.movements?.[movementType]?.explanation;
