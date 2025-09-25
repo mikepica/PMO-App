@@ -388,22 +388,6 @@ function SummaryView({ selectedMonth }) {
           </table>
         </div>
 
-        {/* Legend */}
-        <div className="mt-4 flex items-center space-x-4 text-sm text-gray-600">
-          <span className="font-medium">Legend:</span>
-          <div className="flex items-center space-x-1">
-            <div className="w-4 h-4 bg-green-500 rounded"></div>
-            <span>Green (G)</span>
-          </div>
-          <div className="flex items-center space-x-1">
-            <div className="w-4 h-4 bg-amber-500 rounded"></div>
-            <span>Amber (A)</span>
-          </div>
-          <div className="flex items-center space-x-1">
-            <div className="w-4 h-4 bg-red-500 rounded"></div>
-            <span>Red (R)</span>
-          </div>
-        </div>
       </div>
 
       {/* High Risk Count Table */}
