@@ -63,14 +63,22 @@ function SummaryView({ selectedMonth }) {
   // Get all projects for the current month
   const currentProjects = getProjects(selectedMonth);
   
-  // Get available months
-  const availableMonths = getAvailableMonths();
+  // Get available months and filter to last 6 months
+  const getLastSixMonths = () => {
+    const allMonths = getAvailableMonths();
+    // Sort months chronologically (oldest to newest)
+    const sortedMonths = [...allMonths].sort();
+    // Take the last 6 months (or all if fewer than 6)
+    return sortedMonths.slice(-6);
+  };
+
+  const displayMonths = getLastSixMonths();
   
   // Get all unique projects across all months
   const getAllUniqueProjects = () => {
     const uniqueProjectsMap = new Map();
     
-    for (const month of availableMonths) {
+    for (const month of displayMonths) {
       const projectsForMonth = getProjects(month);
       projectsForMonth.forEach(project => {
         if (!uniqueProjectsMap.has(project.projectId)) {
@@ -94,7 +102,7 @@ function SummaryView({ selectedMonth }) {
 
   // Check if a project has any high risks across all months
   const hasHighRisks = (projectId) => {
-    for (const month of availableMonths) {
+    for (const month of displayMonths) {
       const projectsForMonth = getProjects(month);
       const project = projectsForMonth.find(p => p.projectId === projectId);
       if (project && getHighRiskCount(project) > 0) {
@@ -117,7 +125,7 @@ function SummaryView({ selectedMonth }) {
 
   // Check if a project has any high issues across all months
   const hasHighIssues = (projectId) => {
-    for (const month of availableMonths) {
+    for (const month of displayMonths) {
       const projectsForMonth = getProjects(month);
       const project = projectsForMonth.find(p => p.projectId === projectId);
       if (project && getHighIssueCount(project) > 0) {
@@ -148,6 +156,74 @@ function SummaryView({ selectedMonth }) {
       return [];
     }
     return project.issues.filter(issue => issue.rating >= 6);
+  };
+
+  // Movement calculation helper functions
+  const getStatusRank = (ragStatus) => {
+    switch (ragStatus?.toLowerCase()) {
+      case 'blue':
+        return 4; // Highest/best
+      case 'green':
+        return 3;
+      case 'amber':
+      case 'yellow':
+        return 2;
+      case 'red':
+        return 1; // Lowest/worst
+      default:
+        return 0; // Unknown
+    }
+  };
+
+  const getStatusMovement = (currentStatus, previousStatus) => {
+    const currentRank = getStatusRank(currentStatus);
+    const previousRank = getStatusRank(previousStatus);
+
+    if (currentRank > previousRank) {
+      return { direction: 'up', symbol: '↑', color: 'text-green-600' };
+    } else if (currentRank < previousRank) {
+      return { direction: 'down', symbol: '↓', color: 'text-red-600' };
+    } else {
+      return { direction: 'same', symbol: '↔', color: 'text-gray-500' };
+    }
+  };
+
+  const getCountMovement = (currentCount, previousCount) => {
+    if (currentCount > previousCount) {
+      return { direction: 'up', symbol: '↑', color: 'text-red-600' }; // More issues/risks = bad
+    } else if (currentCount < previousCount) {
+      return { direction: 'down', symbol: '↓', color: 'text-green-600' }; // Fewer issues/risks = good
+    } else {
+      return { direction: 'same', symbol: '↔', color: 'text-gray-500' };
+    }
+  };
+
+  const getMovementForProject = (projectId, currentMonth, previousMonth, type = 'status') => {
+    const currentProjects = getProjects(currentMonth);
+    const previousProjects = getProjects(previousMonth);
+
+    const currentProject = currentProjects.find(p => p.projectId === projectId);
+    const previousProject = previousProjects.find(p => p.projectId === projectId);
+
+    if (!currentProject || !previousProject) {
+      return null; // No movement data available
+    }
+
+    if (type === 'status') {
+      const currentStatus = getOverallStatus(currentProject);
+      const previousStatus = getOverallStatus(previousProject);
+      return getStatusMovement(currentStatus, previousStatus);
+    } else if (type === 'risk') {
+      const currentCount = getHighRiskCount(currentProject);
+      const previousCount = getHighRiskCount(previousProject);
+      return getCountMovement(currentCount, previousCount);
+    } else if (type === 'issue') {
+      const currentCount = getHighIssueCount(currentProject);
+      const previousCount = getHighIssueCount(previousProject);
+      return getCountMovement(currentCount, previousCount);
+    }
+
+    return null;
   };
 
   // Handle mouse events for tooltip
@@ -224,17 +300,17 @@ function SummaryView({ selectedMonth }) {
           <table className="w-full table-fixed">
             <thead>
               <tr className="bg-gray-50">
-                <th className="w-1/2 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                <th className="w-2/5 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
                   Project
                 </th>
-                {availableMonths.map((month) => {
+                {displayMonths.map((month) => {
                   const formatMonthDisplay = (monthStr) => {
                     try {
                       const [year, monthNum] = monthStr.split('-');
                       const date = new Date(parseInt(year), parseInt(monthNum) - 1);
-                      return date.toLocaleDateString('en-US', { 
-                        month: 'short', 
-                        year: 'numeric' 
+                      return date.toLocaleDateString('en-US', {
+                        month: 'short',
+                        year: 'numeric'
                       });
                     } catch {
                       return monthStr;
@@ -242,36 +318,55 @@ function SummaryView({ selectedMonth }) {
                   };
 
                   return (
-                    <th key={month} className={`px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider border-b ${availableMonths.length === 3 ? 'w-1/6' : 'flex-1'}`}>
+                    <th key={month} className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
                       {formatMonthDisplay(month)}
                     </th>
                   );
                 })}
+                <th className="w-1/6 px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                  2-Month Movement
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {currentProjects.map((project) => (
-                <tr key={project.projectId} className="hover:bg-gray-50">
-                  <td className="px-4 py-4 text-sm font-medium text-gray-900 border-r truncate">
-                    <div className="truncate" title={project.name}>
-                      {project.name}
-                    </div>
-                  </td>
-                  {availableMonths.map((month) => {
-                    const projectsForMonth = getProjects(month);
-                    const projectInMonth = projectsForMonth.find(p => p.projectId === project.projectId);
-                    const overallStatus = projectInMonth ? getOverallStatus(projectInMonth) : 'Unknown';
-                    
-                    return (
-                      <td key={month} className="px-4 py-4 text-center">
-                        <div className={`inline-flex items-center justify-center w-8 h-8 rounded text-sm font-bold ${getStatusColor(overallStatus)}`}>
-                          {getStatusText(overallStatus)}
-                        </div>
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
+              {currentProjects.map((project) => {
+                // Calculate movement for most recent two months
+                const currentMonth = displayMonths[displayMonths.length - 1];
+                const previousMonth = displayMonths[displayMonths.length - 2];
+                const movement = previousMonth ? getMovementForProject(project.projectId, currentMonth, previousMonth, 'status') : null;
+
+                return (
+                  <tr key={project.projectId} className="hover:bg-gray-50">
+                    <td className="px-4 py-4 text-sm font-medium text-gray-900 border-r truncate">
+                      <div className="truncate" title={project.name}>
+                        {project.name}
+                      </div>
+                    </td>
+                    {displayMonths.map((month) => {
+                      const projectsForMonth = getProjects(month);
+                      const projectInMonth = projectsForMonth.find(p => p.projectId === project.projectId);
+                      const overallStatus = projectInMonth ? getOverallStatus(projectInMonth) : 'Unknown';
+
+                      return (
+                        <td key={month} className="px-4 py-4 text-center">
+                          <div className={`inline-flex items-center justify-center w-8 h-8 rounded text-sm font-bold ${getStatusColor(overallStatus)}`}>
+                            {getStatusText(overallStatus)}
+                          </div>
+                        </td>
+                      );
+                    })}
+                    <td className="px-4 py-4 text-center">
+                      {movement ? (
+                        <span className={`text-lg font-bold ${movement.color}`} title={`Status ${movement.direction === 'up' ? 'improved' : movement.direction === 'down' ? 'declined' : 'unchanged'} from previous month`}>
+                          {movement.symbol}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400 text-sm">-</span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -298,22 +393,22 @@ function SummaryView({ selectedMonth }) {
       {highRiskProjects.length > 0 && (
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">High Risk Count (Score ≥16)</h2>
-          
+
           <div className="w-full">
             <table className="w-full table-fixed">
               <thead>
                 <tr className="bg-gray-50">
-                  <th className="w-1/2 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                  <th className="w-2/5 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
                     Project
                   </th>
-                  {availableMonths.map((month) => {
+                  {displayMonths.map((month) => {
                     const formatMonthDisplay = (monthStr) => {
                       try {
                         const [year, monthNum] = monthStr.split('-');
                         const date = new Date(parseInt(year), parseInt(monthNum) - 1);
-                        return date.toLocaleDateString('en-US', { 
-                          month: 'short', 
-                          year: 'numeric' 
+                        return date.toLocaleDateString('en-US', {
+                          month: 'short',
+                          year: 'numeric'
                         });
                       } catch {
                         return monthStr;
@@ -321,49 +416,68 @@ function SummaryView({ selectedMonth }) {
                     };
 
                     return (
-                      <th key={month} className={`px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider border-b ${availableMonths.length === 3 ? 'w-1/6' : 'flex-1'}`}>
+                      <th key={month} className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
                         {formatMonthDisplay(month)}
                       </th>
                     );
                   })}
+                  <th className="w-1/6 px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                    2-Month Movement
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {highRiskProjects.map((project) => (
-                  <tr key={project.projectId} className="hover:bg-gray-50">
-                    <td className="px-4 py-4 text-sm font-medium text-gray-900 border-r truncate">
-                      <div className="truncate" title={project.name}>
-                        {project.name}
-                      </div>
-                    </td>
-                    {availableMonths.map((month) => {
-                      const projectsForMonth = getProjects(month);
-                      const projectInMonth = projectsForMonth.find(p => p.projectId === project.projectId);
-                      const highRiskCount = projectInMonth ? getHighRiskCount(projectInMonth) : 0;
-                      
-                      // Color coding based on count
-                      const getCountColor = (count) => {
-                        if (count === 0) return 'text-gray-500';
-                        if (count === 1) return 'text-orange-600 font-semibold';
-                        if (count === 2) return 'text-red-600 font-bold';
-                        return 'text-red-800 font-bold bg-red-100 px-2 py-1 rounded';
-                      };
-                      
-                      return (
-                        <td 
-                          key={month} 
-                          className="px-4 py-4 text-center relative"
-                          onMouseEnter={(e) => handleCellMouseEnter(project.projectId, month, e)}
-                          onMouseLeave={handleCellMouseLeave}
-                        >
-                          <span className={getCountColor(highRiskCount)}>
-                            {highRiskCount}
+                {highRiskProjects.map((project) => {
+                  // Calculate movement for most recent two months
+                  const currentMonth = displayMonths[displayMonths.length - 1];
+                  const previousMonth = displayMonths[displayMonths.length - 2];
+                  const movement = previousMonth ? getMovementForProject(project.projectId, currentMonth, previousMonth, 'risk') : null;
+
+                  return (
+                    <tr key={project.projectId} className="hover:bg-gray-50">
+                      <td className="px-4 py-4 text-sm font-medium text-gray-900 border-r truncate">
+                        <div className="truncate" title={project.name}>
+                          {project.name}
+                        </div>
+                      </td>
+                      {displayMonths.map((month) => {
+                        const projectsForMonth = getProjects(month);
+                        const projectInMonth = projectsForMonth.find(p => p.projectId === project.projectId);
+                        const highRiskCount = projectInMonth ? getHighRiskCount(projectInMonth) : 0;
+
+                        // Color coding based on count
+                        const getCountColor = (count) => {
+                          if (count === 0) return 'text-gray-500';
+                          if (count === 1) return 'text-orange-600 font-semibold';
+                          if (count === 2) return 'text-red-600 font-bold';
+                          return 'text-red-800 font-bold bg-red-100 px-2 py-1 rounded';
+                        };
+
+                        return (
+                          <td
+                            key={month}
+                            className="px-4 py-4 text-center relative"
+                            onMouseEnter={(e) => handleCellMouseEnter(project.projectId, month, e)}
+                            onMouseLeave={handleCellMouseLeave}
+                          >
+                            <span className={getCountColor(highRiskCount)}>
+                              {highRiskCount}
+                            </span>
+                          </td>
+                        );
+                      })}
+                      <td className="px-4 py-4 text-center">
+                        {movement ? (
+                          <span className={`text-lg font-bold ${movement.color}`} title={`High risk count ${movement.direction === 'up' ? 'increased' : movement.direction === 'down' ? 'decreased' : 'unchanged'} from previous month`}>
+                            {movement.symbol}
                           </span>
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
+                        ) : (
+                          <span className="text-gray-400 text-sm">-</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -379,22 +493,22 @@ function SummaryView({ selectedMonth }) {
       {highIssueProjects.length > 0 && (
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">High Issue Count (Rating ≥6)</h2>
-          
+
           <div className="w-full">
             <table className="w-full table-fixed">
               <thead>
                 <tr className="bg-gray-50">
-                  <th className="w-1/2 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                  <th className="w-2/5 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
                     Project
                   </th>
-                  {availableMonths.map((month) => {
+                  {displayMonths.map((month) => {
                     const formatMonthDisplay = (monthStr) => {
                       try {
                         const [year, monthNum] = monthStr.split('-');
                         const date = new Date(parseInt(year), parseInt(monthNum) - 1);
-                        return date.toLocaleDateString('en-US', { 
-                          month: 'short', 
-                          year: 'numeric' 
+                        return date.toLocaleDateString('en-US', {
+                          month: 'short',
+                          year: 'numeric'
                         });
                       } catch {
                         return monthStr;
@@ -402,49 +516,68 @@ function SummaryView({ selectedMonth }) {
                     };
 
                     return (
-                      <th key={month} className={`px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider border-b ${availableMonths.length === 3 ? 'w-1/6' : 'flex-1'}`}>
+                      <th key={month} className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
                         {formatMonthDisplay(month)}
                       </th>
                     );
                   })}
+                  <th className="w-1/6 px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                    2-Month Movement
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {highIssueProjects.map((project) => (
-                  <tr key={project.projectId} className="hover:bg-gray-50">
-                    <td className="px-4 py-4 text-sm font-medium text-gray-900 border-r truncate">
-                      <div className="truncate" title={project.name}>
-                        {project.name}
-                      </div>
-                    </td>
-                    {availableMonths.map((month) => {
-                      const projectsForMonth = getProjects(month);
-                      const projectInMonth = projectsForMonth.find(p => p.projectId === project.projectId);
-                      const highIssueCount = projectInMonth ? getHighIssueCount(projectInMonth) : 0;
-                      
-                      // Color coding based on count
-                      const getCountColor = (count) => {
-                        if (count === 0) return 'text-gray-500';
-                        if (count === 1) return 'text-orange-600 font-semibold';
-                        if (count === 2) return 'text-red-600 font-bold';
-                        return 'text-red-800 font-bold bg-red-100 px-2 py-1 rounded';
-                      };
-                      
-                      return (
-                        <td 
-                          key={month} 
-                          className="px-4 py-4 text-center relative"
-                          onMouseEnter={(e) => handleCellMouseEnter(project.projectId, month, e, 'issue')}
-                          onMouseLeave={handleCellMouseLeave}
-                        >
-                          <span className={getCountColor(highIssueCount)}>
-                            {highIssueCount}
+                {highIssueProjects.map((project) => {
+                  // Calculate movement for most recent two months
+                  const currentMonth = displayMonths[displayMonths.length - 1];
+                  const previousMonth = displayMonths[displayMonths.length - 2];
+                  const movement = previousMonth ? getMovementForProject(project.projectId, currentMonth, previousMonth, 'issue') : null;
+
+                  return (
+                    <tr key={project.projectId} className="hover:bg-gray-50">
+                      <td className="px-4 py-4 text-sm font-medium text-gray-900 border-r truncate">
+                        <div className="truncate" title={project.name}>
+                          {project.name}
+                        </div>
+                      </td>
+                      {displayMonths.map((month) => {
+                        const projectsForMonth = getProjects(month);
+                        const projectInMonth = projectsForMonth.find(p => p.projectId === project.projectId);
+                        const highIssueCount = projectInMonth ? getHighIssueCount(projectInMonth) : 0;
+
+                        // Color coding based on count
+                        const getCountColor = (count) => {
+                          if (count === 0) return 'text-gray-500';
+                          if (count === 1) return 'text-orange-600 font-semibold';
+                          if (count === 2) return 'text-red-600 font-bold';
+                          return 'text-red-800 font-bold bg-red-100 px-2 py-1 rounded';
+                        };
+
+                        return (
+                          <td
+                            key={month}
+                            className="px-4 py-4 text-center relative"
+                            onMouseEnter={(e) => handleCellMouseEnter(project.projectId, month, e, 'issue')}
+                            onMouseLeave={handleCellMouseLeave}
+                          >
+                            <span className={getCountColor(highIssueCount)}>
+                              {highIssueCount}
+                            </span>
+                          </td>
+                        );
+                      })}
+                      <td className="px-4 py-4 text-center">
+                        {movement ? (
+                          <span className={`text-lg font-bold ${movement.color}`} title={`High issue count ${movement.direction === 'up' ? 'increased' : movement.direction === 'down' ? 'decreased' : 'unchanged'} from previous month`}>
+                            {movement.symbol}
                           </span>
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
+                        ) : (
+                          <span className="text-gray-400 text-sm">-</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
